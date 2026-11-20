@@ -1,0 +1,543 @@
+<title>Mi cartera</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: panel de una columna ancha; nav pegajosa por secciones; tarjetas de mercado en rejilla que pasan a 1 columna en celular */
+:root{
+  --bg:#f2f5f4; --surface:#ffffff; --sunk:#e9efed; --fg:#13201c; --muted:#5a6a65; --line:#d6dfdc;
+  --accent:#0f7a5c; --accent-soft:#d9eee6; --up:#11804f; --down:#c23a2b; --down-soft:#fbe3df; --warn:#a85a10; --warn-soft:#fbeadb;
+  --c1:#3d8f74; --c2:#2f5fa7; --c3:#c0623a; --c4:#7a8f2a; --c5:#8a4fb0; --c6:#c79a1e;
+  --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --body:"Inter",system-ui,-apple-system,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e1614; --surface:#15201d; --sunk:#1b2925; --fg:#e3ebe8; --muted:#92a29d; --line:#263430;
+  --accent:#45c79c; --accent-soft:#173a2f; --up:#4fd08f; --down:#ff7a6b; --down-soft:#3d1d19; --warn:#f0a868; --warn-soft:#3a2716;
+  --c1:#5fbf9c; --c2:#6f9be0; --c3:#e58a62; --c4:#a9c24d; --c5:#b685d8; --c6:#e3bd4c; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e1614; --surface:#15201d; --sunk:#1b2925; --fg:#e3ebe8; --muted:#92a29d; --line:#263430;
+  --accent:#45c79c; --accent-soft:#173a2f; --up:#4fd08f; --down:#ff7a6b; --down-soft:#3d1d19; --warn:#f0a868; --warn-soft:#3a2716;
+  --c1:#5fbf9c; --c2:#6f9be0; --c3:#e58a62; --c4:#a9c24d; --c5:#b685d8; --c6:#e3bd4c; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:15px/1.55 var(--body)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.gut{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1040px;margin:0 auto}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(1.8rem,4vw,2.5rem);font-weight:700}
+h2{font-size:1.4rem;font-weight:700}
+h3{font-size:1.05rem;font-weight:700}
+p{margin:0}
+a{color:var(--accent)}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.small{font-size:.84rem}
+.eyebrow{font:600 .72rem/1 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+header.top{padding-block:28px 18px;display:grid;gap:8px}
+nav.secs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-block:1px solid var(--line)}
+nav.secs .wrap{display:flex;gap:4px;overflow-x:auto;padding-block:6px;scrollbar-width:none}
+nav.secs a{flex:none;text-decoration:none;color:var(--muted);font-weight:500;font-size:.88rem;padding:6px 12px;border-radius:99px}
+nav.secs a:hover,nav.secs a:focus-visible{background:var(--sunk);color:var(--fg)}
+main{padding-block:24px 72px;display:grid;gap:48px}
+section{display:grid;gap:16px;scroll-margin-top:64px}
+.sec-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* Nota del día */
+.nota{display:grid;gap:10px;border-left:4px solid var(--down)}
+.nota ul{margin:0;padding-left:1.1em;display:grid;gap:6px}
+.nota .parati{background:var(--sunk);border-radius:10px;padding:10px 12px}
+.movers{display:flex;flex-wrap:wrap;gap:8px}
+.mv{display:inline-flex;gap:8px;align-items:baseline;background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:6px 14px;font-weight:600}
+
+/* Mercado */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:8px;cursor:pointer;text-align:left;font:inherit;color:inherit;width:100%}
+.card[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.card .row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.card .sym{font:700 1.05rem var(--display)}
+.card .nm{font-size:.78rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .px{font:600 1.3rem var(--mono)}
+.chg{font:600 .85rem var(--mono);padding:2px 7px;border-radius:6px}
+.chg.up{color:var(--up);background:var(--accent-soft)}
+.chg.dn{color:var(--down);background:var(--down-soft)}
+.range{display:grid;gap:3px;font-size:.72rem;color:var(--muted)}
+.range .track{position:relative;height:6px;border-radius:3px;background:var(--sunk)}
+.range .pin{position:absolute;top:-3px;width:4px;height:12px;border-radius:2px;background:var(--fg);transform:translateX(-50%)}
+.range .ends{display:flex;justify-content:space-between}
+svg.spark{width:100%;height:46px;display:block}
+.detail{display:grid;gap:10px}
+.detail .links{display:flex;flex-wrap:wrap;gap:8px}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;font-weight:500;text-decoration:none;border:1px solid var(--line);border-radius:99px;padding:4px 12px;color:var(--fg);background:var(--surface)}
+.pill:hover{border-color:var(--accent)}
+.chartbox{position:relative}
+svg.big{width:100%;display:block}
+.tip{position:absolute;pointer-events:none;background:var(--fg);color:var(--bg);font:500 .78rem var(--mono);padding:4px 8px;border-radius:6px;white-space:nowrap;transform:translate(-50%,-120%)}
+
+/* Plan */
+.plan{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:720px){.plan{grid-template-columns:minmax(0,1fr)}}
+.donutbox{display:grid;place-items:center;gap:8px}
+svg.donut{width:200px;height:200px;max-width:100%}
+.controls{display:flex;flex-wrap:wrap;gap:12px}
+.field{display:grid;gap:4px;flex:1 1 150px}
+.field label{font-size:.8rem;color:var(--muted)}
+input[type=number]{font:600 1rem var(--mono);color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.tablebox{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:14px}
+table{width:100%;border-collapse:collapse;min-width:620px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.72rem;color:var(--muted);font-weight:600;letter-spacing:.05em;text-transform:uppercase}
+tr:last-child td{border-bottom:0}
+.r{text-align:right}
+td input[type=number]{width:70px;padding:4px 6px;font-size:.9rem;text-align:right}
+.nm2{display:flex;gap:8px;align-items:flex-start}
+.dot{width:10px;height:10px;border-radius:3px;flex:none;margin-top:6px}
+.nm2 small{display:block;color:var(--muted);font-size:.8rem;line-height:1.4}
+.chip{display:inline-block;font-size:.72rem;font-weight:600;padding:2px 8px;border-radius:99px;white-space:nowrap}
+.low{background:var(--accent-soft);color:var(--accent)}
+.mid{background:var(--sunk);color:var(--fg)}
+.high{background:var(--warn-soft);color:var(--warn)}
+.totals{display:flex;flex-wrap:wrap;gap:8px 24px;font-size:.9rem;align-items:center}
+.totals b{font-family:var(--mono)}
+.bad{color:var(--down);font-weight:600}
+button.ghost{font:500 .8rem var(--body);background:none;border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:5px 10px;cursor:pointer}
+
+/* Proyección */
+.proj{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,280px);gap:16px}
+@media (max-width:760px){.proj{grid-template-columns:minmax(0,1fr)}}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:.82rem}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:14px;height:3px;border-radius:2px;display:inline-block}
+.scen{display:grid;gap:8px}
+.scen .s{display:flex;justify-content:space-between;gap:8px;padding:8px 10px;border-radius:10px;background:var(--sunk);font-size:.9rem}
+.crash{display:grid;gap:6px}
+
+/* Noticias */
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tab{font:600 .85rem var(--body);border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:99px;padding:5px 14px;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.news{display:grid;gap:0;background:var(--surface);border:1px solid var(--line);border-radius:14px}
+.news a.item{display:grid;gap:2px;padding:12px 16px;text-decoration:none;color:var(--fg);border-bottom:1px solid var(--line)}
+.news a.item:last-child{border-bottom:0}
+.news a.item:hover{background:var(--sunk)}
+.news .meta{font-size:.78rem;color:var(--muted)}
+
+/* Calendario */
+.cal{display:grid;gap:0;background:var(--surface);border:1px solid var(--line);border-radius:14px}
+.ev{display:grid;grid-template-columns:76px minmax(0,1fr) auto;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);align-items:start}
+.ev:last-child{border-bottom:0}
+.ev .d{font:600 .85rem var(--mono);line-height:1.3}
+.ev .d small{display:block;font-weight:400;color:var(--muted)}
+.ev .left{font:600 .75rem var(--mono);color:var(--muted);white-space:nowrap}
+.ev.past{opacity:.5}
+.tag{font-size:.7rem;font-weight:600;color:var(--warn)}
+
+/* Pasos y enlaces */
+ol.steps{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+ol.steps li{display:flex;gap:10px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+ol.steps input{margin-top:4px;accent-color:var(--accent);width:18px;height:18px;flex:none}
+ol.steps li.done label{color:var(--muted);text-decoration:line-through}
+.progress{height:6px;border-radius:3px;background:var(--sunk);overflow:hidden}
+.progress i{display:block;height:100%;background:var(--accent);transition:width .3s}
+.links-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.lk{display:grid;gap:2px;text-decoration:none;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.lk:hover{border-color:var(--accent)}
+.lk small{color:var(--muted);font-size:.8rem}
+.lk b{font-weight:600}
+.alerta{display:grid;gap:6px}
+.copy{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.copy code{font:600 .95rem var(--mono);background:var(--sunk);padding:4px 10px;border-radius:6px}
+footer{font-size:.8rem;color:var(--muted);display:grid;gap:6px}
+footer ul{margin:0;padding-left:1.1em}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="top gut"><div class="wrap" style="display:grid;gap:8px">
+  <span class="eyebrow">Plan personal · Colombia · Hapi</span>
+  <h1>Mi cartera</h1>
+  <p class="muted">Se actualiza sola cada 30 minutos. Última vez: <span class="num" id="gen"></span> (hora Colombia).</p>
+</div></header>
+
+<nav class="secs" aria-label="Secciones"><div class="wrap gut">
+  <a href="#hoy">Hoy</a><a href="#mercado">Mercado</a><a href="#plan">Mi plan</a><a href="#futuro">Qué puede pasar</a><a href="#noticias">Noticias</a><a href="#calendario">Fechas</a><a href="#pasos">Pasos</a><a href="#vigilar">Dónde vigilar</a>
+</div></nav>
+
+<main class="gut"><div class="wrap" style="display:grid;gap:48px">
+
+<section id="hoy">
+  <div class="sec-head"><h2>Hoy</h2><span class="small muted">Cambio del día</span></div>
+  <div class="movers" id="movers"></div>
+  <div class="panel nota" id="notaBox" hidden>
+    <span class="eyebrow" style="color:var(--down)" id="notaFecha"></span>
+    <h2 id="notaTitulo"></h2>
+    <ul id="notaPuntos"></ul>
+    <p class="parati"><b>Para ti: </b><span id="notaParaTi"></span></p>
+  </div>
+</section>
+
+<section id="mercado">
+  <div class="sec-head"><h2>Mercado</h2><span class="small muted">Toca una tarjeta para ver su gráfico</span></div>
+  <div class="cards" id="cards"></div>
+  <div class="panel detail" id="detail">
+    <div class="sec-head"><h3 id="dTitle"></h3><span class="small muted" id="dSub"></span></div>
+    <div class="chartbox" id="chartbox"><svg class="big" id="big" role="img" aria-label="Gráfico de precio"></svg><div class="tip" id="tip" hidden></div></div>
+    <div class="links" id="dLinks"></div>
+  </div>
+</section>
+
+<section id="plan">
+  <div class="sec-head"><h2>Mi plan</h2><button class="ghost" id="reset" type="button">Volver al reparto sugerido</button></div>
+  <div class="controls">
+    <div class="field"><label for="total">Plata total (pesos) · escribe la tuya, se guarda solo en este navegador</label><input id="total" type="number" min="0" step="10000"></div>
+    <div class="field"><label for="trm">Dólar (pesos por 1 USD)</label><input id="trm" type="number" min="1000" step="10"></div>
+  </div>
+  <div class="plan">
+    <div class="donutbox"><svg class="donut" id="donut" viewBox="0 0 200 200" role="img" aria-label="Reparto de la cartera"></svg><span class="small muted" id="donutNote"></span></div>
+    <div style="display:grid;gap:12px;min-width:0">
+      <div class="tablebox"><table>
+        <thead><tr><th>Dónde</th><th>Riesgo</th><th class="r">%</th><th class="r">Pesos</th><th class="r">Dólares</th><th class="r">Acciones</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table></div>
+      <div class="totals">
+        <span>Pasar a Hapi (un solo depósito): <b id="tHapi"></b></span>
+        <span>Dejar en Nu o Lulo: <b id="tPesos"></b></span>
+        <span id="sum"></span>
+      </div>
+      <p class="small muted">“Acciones” es la fracción que compras al precio de hoy. VOO ya incluye a Nvidia, Google y Meta; comprarlas aparte les da más peso.</p>
+    </div>
+  </div>
+</section>
+
+<section id="futuro">
+  <div class="sec-head"><h2>Qué puede pasar</h2></div>
+  <p class="muted" style="max-width:68ch">Nadie puede predecir el precio de una acción. Lo que sí se puede ver es cómo crece la plata con el tiempo en distintos escenarios, y qué le pasaría a tu cartera en una caída fuerte.</p>
+  <div class="proj">
+    <div class="panel" style="display:grid;gap:12px">
+      <div class="controls">
+        <div class="field"><label for="mensual">Ahorro cada mes: <b class="num" id="mensualV"></b></label><input id="mensual" type="range" min="0" max="500000" step="10000" value="100000"></div>
+        <div class="field"><label for="anios">Años: <b class="num" id="aniosV"></b></label><input id="anios" type="range" min="1" max="30" step="1" value="10"></div>
+      </div>
+      <div class="chartbox"><svg class="big" id="projChart" role="img" aria-label="Proyección de crecimiento"></svg></div>
+      <div class="legend"><span><i style="background:var(--muted)"></i>Solo guardado (0 %)</span><span><i style="background:var(--c2)"></i>Malo 3 %</span><span><i style="background:var(--accent)"></i>Normal 7 %</span><span><i style="background:var(--c6)"></i>Bueno 10 %</span></div>
+    </div>
+    <div style="display:grid;gap:12px;align-content:start">
+      <div class="panel scen" id="scen"></div>
+      <div class="panel crash">
+        <h3>Si viene una caída fuerte</h3>
+        <p class="small muted">Ejemplo de crisis: VOO −30 %, acciones sueltas −50 %, pesos 0 %.</p>
+        <p>Tu cartera pasaría de <b class="num" id="crashA"></b> a <b class="num" id="crashB"></b>.</p>
+        <p class="small muted">En crisis pasadas el S&amp;P 500 se recuperó, pero tardó de meses a años. Por eso solo se invierte plata que no vas a necesitar pronto.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="noticias">
+  <div class="sec-head"><h2>Noticias</h2><a class="small" id="moreNews" target="_blank" rel="noopener">Ver más en Google Noticias</a></div>
+  <div class="tabs" role="tablist" id="tabs"></div>
+  <div class="news" id="newsList"></div>
+</section>
+
+<section id="calendario">
+  <div class="sec-head"><h2>Fechas para estar pendiente</h2></div>
+  <div class="cal" id="cal"></div>
+</section>
+
+<section id="pasos">
+  <div class="sec-head"><h2>Pasos</h2><span class="small muted num" id="stepCount"></span></div>
+  <div class="progress"><i id="stepBar"></i></div>
+  <ol class="steps" id="steps"></ol>
+</section>
+
+<section id="vigilar">
+  <div class="sec-head"><h2>Dónde vigilar</h2></div>
+  <div class="panel alerta">
+    <h3>Tus alertas al celular</h3>
+    <p class="small">Cada 30 minutos se revisan las noticias y los precios, y si pasa algo grande te llega un aviso a la app <b>ntfy</b>, aunque tu PC esté apagado. El canal está guardado en tu app; no se muestra aquí porque esta página es pública.</p>
+  </div>
+  <div class="links-grid" id="links"></div>
+</section>
+
+<footer>
+  <strong>Fuentes</strong>
+  <ul>
+    <li>Precios: Yahoo Finance. Noticias: Google Noticias. Bajados el día indicado arriba.</li>
+    <li><a href="https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm" target="_blank" rel="noopener">Calendario de la Fed</a> · <a href="https://www.banrep.gov.co/es/noticias/calendario-actividades-junta-directiva/reunion-diciembre-2026" target="_blank" rel="noopener">Banco de la República, diciembre 2026</a></li>
+    <li><a href="https://aistockwire.com/blog/anthropic-ant-ipo-lockup-expiration-dates-calendar" target="_blank" rel="noopener">Calendario de desbloqueo de ANT – AI Stock Wire</a> · <a href="https://www.nacionale.com/en/articles/when-does-anthropic-lockup-expire-insiders-sell-shares-dates-december-15-may-2027" target="_blank" rel="noopener">Nacionale</a></li>
+    <li><a href="https://finanzasplus.co/comparar/cdts" target="_blank" rel="noopener">Tasas de CDT – FinanzasPlus</a> · <a href="https://finanzasplus.co/comparar/brokers/hapi" target="_blank" rel="noopener">Comisiones de Hapi – FinanzasPlus</a></li>
+  </ul>
+  <p>Las fechas marcadas “aprox.” son estimadas por cómo informan cada año; la empresa las confirma unas semanas antes. Esto no es asesoría de un asesor con licencia.</p>
+</footer>
+
+</div></main>
+
+<script id="datos" type="application/json">__DATOS__</script>
+<script id="nota" type="application/json">__NOTA__</script>
+<script>
+const D=JSON.parse(document.getElementById("datos").textContent);
+const N=JSON.parse(document.getElementById("nota").textContent);
+const $=id=>document.getElementById(id);
+const el=(t,a={},txt)=>{const e=document.createElement(t);for(const k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;return e};
+const NS="http://www.w3.org/2000/svg";
+const sv=(t,a={})=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e};
+const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const cop=v=>"$ "+Math.round(v).toLocaleString("es-CO");
+const usd=v=>v.toLocaleString("es-CO",{minimumFractionDigits:2,maximumFractionDigits:2});
+const pctf=v=>(v>0?"+":"")+v.toLocaleString("es-CO",{maximumFractionDigits:1})+" %";
+const TRM=D.precios["COP=X"].precio;
+
+$("gen").textContent=new Date(D.generado).toLocaleString("es-CO",{timeZone:"America/Bogota",dateStyle:"long",timeStyle:"short"});
+
+/* Nota: solo se muestra si es de los últimos 2 días */
+if(N.fecha_iso&&(new Date(D.generado)-new Date(N.fecha_iso+"T23:59:00-05:00"))<2*864e5){
+  $("notaBox").hidden=false;
+  $("notaFecha").textContent=N.fecha;$("notaTitulo").textContent=N.titulo;$("notaParaTi").textContent=N.para_ti;
+  N.puntos.forEach(p=>$("notaPuntos").appendChild(el("li",{},p)));
+}
+/* Movimientos del día, de mayor a menor */
+Object.entries(D.precios).filter(([s])=>s!=="COP=X").sort((a,b)=>Math.abs(b[1].cambio_dia)-Math.abs(a[1].cambio_dia)).forEach(([s,p])=>{
+  const m=el("span",{class:"mv"});m.append(el("span",{},s),el("span",{class:"chg "+(p.cambio_dia>=0?"up":"dn")},pctf(p.cambio_dia)));$("movers").append(m)});
+
+/* Mercado */
+const INFO={
+  VOO:{n:"500 empresas grandes de EE. UU.",c:"--c2"},
+  ANT:{n:"Anthropic",c:"--c3"},
+  NVDA:{n:"Nvidia",c:"--c4"},
+  GOOGL:{n:"Alphabet (Google)",c:"--c5"},
+  META:{n:"Meta Platforms",c:"--c6"},
+  "COP=X":{n:"Dólar en pesos",c:"--c1",label:"USD/COP"}
+};
+function sparkPath(serie,w,h,pad=2){
+  const ys=serie.map(p=>p[1]),mn=Math.min(...ys),mx=Math.max(...ys),r=mx-mn||1;
+  return serie.map((p,i)=>[pad+(w-2*pad)*(serie.length===1?.5:i/(serie.length-1)),pad+(h-2*pad)*(1-(p[1]-mn)/r)]);
+}
+let current=store.get("sel")||"ANT";
+function buildCards(){
+  const box=$("cards");box.innerHTML="";
+  Object.keys(INFO).forEach(s=>{
+    const p=D.precios[s];if(!p)return;
+    const serie=p.serie, first=serie[0][1], last=p.precio, per=(last-first)/first*100;
+    const b=el("button",{class:"card",type:"button","aria-pressed":String(s===current)});
+    const r1=el("div",{class:"row"});const left=el("div",{style:"min-width:0"});
+    left.append(el("div",{class:"sym"},INFO[s].label||s),el("div",{class:"nm"},INFO[s].n));
+    const ch=el("span",{class:"chg "+(p.cambio_dia>=0?"up":"dn")},pctf(p.cambio_dia));
+    r1.append(left,ch);
+    const r2=el("div",{class:"row"});
+    r2.append(el("span",{class:"px"},s==="COP=X"?cop(last):usd(last)),el("span",{class:"small muted num"},(s==="ANT"?"desde salida ":"6 meses ")+pctf(per)));
+    const svg=sv("svg",{class:"spark",viewBox:"0 0 200 46",preserveAspectRatio:"none","aria-hidden":"true"});
+    const pts=sparkPath(serie,200,46);
+    const col=per>=0?"var(--up)":"var(--down)";
+    svg.append(sv("path",{d:"M"+pts.map(q=>q.join(",")).join("L")+`L${pts.at(-1)[0]},46L${pts[0][0]},46Z`,fill:col,opacity:".12"}));
+    svg.append(sv("polyline",{points:pts.map(q=>q.join(",")).join(" "),fill:"none",stroke:col,"stroke-width":"1.6","vector-effect":"non-scaling-stroke"}));
+    b.append(r1,r2,svg);
+    if(p.min52&&p.max52&&p.max52>p.min52){
+      const pos=Math.min(100,Math.max(0,(last-p.min52)/(p.max52-p.min52)*100));
+      const rg=el("div",{class:"range"});rg.append(el("span",{},"Rango del último año"));
+      const tr=el("div",{class:"track"});tr.append(el("span",{class:"pin",style:`left:${pos}%`}));
+      const ends=el("div",{class:"ends num"});ends.append(el("span",{},usd(p.min52)),el("span",{},usd(p.max52)));
+      rg.append(tr,ends);b.append(rg);
+    }
+    b.addEventListener("click",()=>{current=s;store.set("sel",s);buildCards();drawBig()});
+    box.append(b);
+  });
+}
+function linksFor(s){
+  if(s==="COP=X")return[["Yahoo Finance","https://finance.yahoo.com/quote/COP=X"],["Banco de la República (TRM)","https://www.banrep.gov.co/es/estadisticas/trm"]];
+  const ex=s==="VOO"?"AMEX":"NASDAQ";
+  const out=[["Yahoo Finance",`https://finance.yahoo.com/quote/${s}`],["TradingView",`https://www.tradingview.com/symbols/${ex}-${s}/`],["Google Finance",`https://www.google.com/finance/quote/${s}:${s==="VOO"?"NYSEARCA":"NASDAQ"}`],["Qué dicen los analistas",`https://finance.yahoo.com/quote/${s}/analysis`]];
+  if(s!=="VOO")out.push(["Documentos ante la SEC",`https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&company=&CIK=${s}&type=&dateb=&owner=include&count=40`]);
+  return out;
+}
+function drawBig(){
+  const s=current,p=D.precios[s],serie=p.serie;
+  $("dTitle").textContent=(INFO[s].label||s)+" · "+INFO[s].n;
+  $("dSub").textContent=(s==="ANT"?"Desde que salió a bolsa":"Últimos 6 meses")+" · cierre diario";
+  const L=$("dLinks");L.innerHTML="";linksFor(s).forEach(([t,u])=>L.append(el("a",{class:"pill",href:u,target:"_blank",rel:"noopener"},t+" ↗")));
+  const svg=$("big"),W=Math.max(300,$("chartbox").clientWidth),H=W<500?200:260,m={l:52,r:12,t:12,b:26};
+  svg.setAttribute("viewBox",`0 0 ${W} ${H}`);svg.innerHTML="";
+  const ys=serie.map(q=>q[1]);let mn=Math.min(...ys),mx=Math.max(...ys);const padv=(mx-mn||mx*.05)*.08;mn-=padv;mx+=padv;
+  const x=i=>m.l+(W-m.l-m.r)*(serie.length===1?.5:i/(serie.length-1)), y=v=>m.t+(H-m.t-m.b)*(1-(v-mn)/(mx-mn));
+  const fmt=v=>s==="COP=X"?Math.round(v).toLocaleString("es-CO"):v.toLocaleString("es-CO",{maximumFractionDigits:v<100?1:0});
+  for(let k=0;k<=4;k++){const v=mn+(mx-mn)*k/4,yy=y(v);
+    svg.append(sv("line",{x1:m.l,x2:W-m.r,y1:yy,y2:yy,stroke:"var(--line)","stroke-width":"1"}));
+    const t=sv("text",{x:m.l-6,y:yy+4,"text-anchor":"end","font-size":"11",fill:"var(--muted)","font-family":"JetBrains Mono, monospace"});t.textContent=fmt(v);svg.append(t);}
+  const idx=[0,Math.floor((serie.length-1)/2),serie.length-1].filter((v,i,a)=>a.indexOf(v)===i);
+  idx.forEach(i=>{const t=sv("text",{x:x(i),y:H-6,"text-anchor":i===0?"start":i===serie.length-1?"end":"middle","font-size":"11",fill:"var(--muted)"});t.textContent=new Date(serie[i][0]+"T12:00").toLocaleDateString("es-CO",{day:"numeric",month:"short"});svg.append(t)});
+  const col=serie.at(-1)[1]>=serie[0][1]?"var(--up)":"var(--down)";
+  const pts=serie.map((q,i)=>[x(i),y(q[1])]);
+  if(pts.length>1)svg.append(sv("path",{d:"M"+pts.map(q=>q.join(",")).join("L")+`L${pts.at(-1)[0]},${H-m.b}L${pts[0][0]},${H-m.b}Z`,fill:col,opacity:".1"}));
+  svg.append(sv("polyline",{points:pts.map(q=>q.join(",")).join(" "),fill:"none",stroke:col,"stroke-width":"2"}));
+  if(s==="ANT"){const yy=y(83);if(yy>m.t&&yy<H-m.b){svg.append(sv("line",{x1:m.l,x2:W-m.r,y1:yy,y2:yy,stroke:"var(--muted)","stroke-dasharray":"4 4"}));const t=sv("text",{x:W-m.r,y:yy-5,"text-anchor":"end","font-size":"11",fill:"var(--muted)"});t.textContent="Precio de salida 83";svg.append(t)}}
+  pts.forEach((q,i)=>{if(i===pts.length-1)svg.append(sv("circle",{cx:q[0],cy:q[1],r:4,fill:col}))});
+  const cur=sv("circle",{r:4,fill:"var(--fg)",opacity:"0"});svg.append(cur);
+  const tip=$("tip");
+  svg.onpointermove=e=>{const r=svg.getBoundingClientRect(),px=(e.clientX-r.left)*W/r.width;
+    let i=Math.round((px-m.l)/((W-m.l-m.r)||1)*(serie.length-1));i=Math.max(0,Math.min(serie.length-1,i));
+    cur.setAttribute("cx",pts[i][0]);cur.setAttribute("cy",pts[i][1]);cur.setAttribute("opacity","1");
+    tip.hidden=false;tip.textContent=new Date(serie[i][0]+"T12:00").toLocaleDateString("es-CO",{day:"numeric",month:"short",year:"numeric"})+" · "+fmt(serie[i][1])+(s==="COP=X"?" pesos":" USD");
+    tip.style.left=Math.min(r.width-70,Math.max(70,pts[i][0]*r.width/W))+"px";tip.style.top=(pts[i][1]*r.height/H)+"px"};
+  svg.onpointerleave=()=>{tip.hidden=true;cur.setAttribute("opacity","0")};
+}
+
+/* Plan */
+const PLAN=[
+  {id:"pesos",n:"Cajita Nu o CDT Lulo",d:"Nu ≈ 9 % al año y la sacas cuando quieras; CDT Lulo ≈ 13 % pero quieta 1 año.",r:"low",p:30,sym:null,c:"--c1"},
+  {id:"voo",n:"VOO",d:"Las 500 empresas grandes de EE. UU. La base de largo plazo.",r:"mid",p:25,sym:"VOO",c:"--c2"},
+  {id:"ant",n:"ANT · Anthropic",d:"Recién salida a bolsa; comprar en dos partes.",r:"high",p:15,sym:"ANT",c:"--c3"},
+  {id:"nvda",n:"NVDA · Nvidia",d:"Chips para IA. Investigación de la SEC y CEO interina: comprar en dos partes.",r:"high",p:10,sym:"NVDA",c:"--c4"},
+  {id:"googl",n:"GOOGL · Google",d:"Buscador, YouTube, Android y nube.",r:"high",p:10,sym:"GOOGL",c:"--c5"},
+  {id:"meta",n:"META · Meta",d:"Facebook, Instagram y WhatsApp.",r:"high",p:10,sym:"META",c:"--c6"}
+];
+const RISK={low:"Bajo",mid:"Medio",high:"Alto"};
+let pct=store.get("pct")||Object.fromEntries(PLAN.map(x=>[x.id,x.p]));
+const savedM=store.get("money-v3");
+$("total").value=savedM?.total??1000000;$("trm").value=savedM?.trm??Math.round(TRM);
+function buildRows(){
+  const tb=$("rows");tb.innerHTML="";
+  PLAN.forEach(x=>{
+    const tr=el("tr");
+    const td1=el("td");const nm=el("div",{class:"nm2"});nm.append(el("span",{class:"dot",style:`background:var(${x.c})`}));
+    const tx=el("div");tx.append(el("strong",{},x.n),el("small",{},x.d));nm.append(tx);td1.append(nm);
+    const td2=el("td");td2.append(el("span",{class:"chip "+x.r},RISK[x.r]));
+    const td3=el("td",{class:"r"});const inp=el("input",{type:"number",id:"p-"+x.id,min:"0",max:"100",step:"5","aria-label":"Porcentaje "+x.n});inp.value=pct[x.id]??x.p;
+    inp.addEventListener("input",e=>{pct[x.id]=Math.max(0,+e.target.value||0);store.set("pct",pct);calc()});td3.append(inp);
+    tr.append(td1,td2,td3,el("td",{class:"r num",id:"c-"+x.id}),el("td",{class:"r num",id:"u-"+x.id}),el("td",{class:"r num",id:"a-"+x.id}));
+    tb.append(tr);
+  });
+}
+let lastTotal=0;
+function calc(){
+  const total=Math.max(0,+$("total").value||0),trm=Math.max(1,+$("trm").value||1);
+  store.set("money-v3",{total,trm});lastTotal=total;
+  let sum=0,hapi=0,pesos=0;const parts=[];
+  PLAN.forEach(x=>{const p=pct[x.id]??0;sum+=p;const v=total*p/100;
+    $("c-"+x.id).textContent=cop(v);
+    if(x.sym){hapi+=v;const u=v/trm;$("u-"+x.id).textContent=usd(u);$("a-"+x.id).textContent=(u/D.precios[x.sym].precio).toLocaleString("es-CO",{maximumFractionDigits:3})}
+    else{pesos+=v;$("u-"+x.id).textContent="—";$("a-"+x.id).textContent="—"}
+    parts.push({p,c:x.c,n:x.n});});
+  $("tHapi").textContent=`${cop(hapi)} (≈ ${usd(hapi/trm)} USD)`;$("tPesos").textContent=cop(pesos);
+  const s=$("sum");s.textContent=sum===100?"Suma 100 %":`Suma ${sum} %: ajusta a 100 %`;s.className=sum===100?"muted":"bad";
+  drawDonut(parts,sum);drawProj();
+}
+function drawDonut(parts,sum){
+  const svg=$("donut");svg.innerHTML="";const R=80,cx=100,cy=100,C=2*Math.PI*R;let off=0;
+  svg.append(sv("circle",{cx,cy,r:R,fill:"none",stroke:"var(--sunk)","stroke-width":"26"}));
+  const tot=Math.max(sum,1);
+  parts.forEach(q=>{if(!q.p)return;const len=C*q.p/tot;
+    const c=sv("circle",{cx,cy,r:R,fill:"none",stroke:`var(${q.c})`,"stroke-width":"26","stroke-dasharray":`${Math.max(0,len-2)} ${C}`,"stroke-dashoffset":String(-off),transform:`rotate(-90 ${cx} ${cy})`});
+    const t=sv("title");t.textContent=`${q.n}: ${q.p} %`;c.append(t);svg.append(c);off+=len;});
+  const a=sv("text",{x:cx,y:cy-2,"text-anchor":"middle","font-size":"13",fill:"var(--muted)"});a.textContent="Acciones";svg.append(a);
+  const st=parts.slice(1).reduce((s,q)=>s+q.p,0);
+  const b=sv("text",{x:cx,y:cy+20,"text-anchor":"middle","font-size":"22","font-weight":"700",fill:"var(--fg)","font-family":"JetBrains Mono, monospace"});b.textContent=st+" %";svg.append(b);
+  $("donutNote").textContent=`${parts[0].p} % seguro en pesos`;
+}
+
+/* Proyección */
+const SC=[{r:0,c:"var(--muted)",n:"Solo guardado"},{r:.03,c:"var(--c2)",n:"Malo (3 %)"},{r:.07,c:"var(--accent)",n:"Normal (7 %)"},{r:.10,c:"var(--c6)",n:"Bueno (10 %)"}];
+const short=v=>v>=1e9?(v/1e9).toLocaleString("es-CO",{maximumFractionDigits:1})+" mil M":v>=1e6?(v/1e6).toLocaleString("es-CO",{maximumFractionDigits:1})+" M":Math.round(v/1e3)+" mil";
+function grow(P,M,r,years){const out=[P];let v=P;const mr=Math.pow(1+r,1/12)-1;for(let mth=1;mth<=years*12;mth++){v=v*(1+mr)+M;if(mth%12===0)out.push(v)}return out}
+function drawProj(){
+  const M=+$("mensual").value,Y=+$("anios").value,P=lastTotal;
+  $("mensualV").textContent=cop(M);$("aniosV").textContent=Y;
+  const series=SC.map(s=>grow(P,M,s.r,Y));
+  const svg=$("projChart"),W=Math.max(300,svg.parentNode.clientWidth),H=W<500?200:240,m={l:58,r:12,t:12,b:26};
+  svg.setAttribute("viewBox",`0 0 ${W} ${H}`);svg.innerHTML="";
+  const mx=Math.max(...series.flat())*1.05||1;
+  const x=i=>m.l+(W-m.l-m.r)*i/Y,y=v=>m.t+(H-m.t-m.b)*(1-v/mx);
+  for(let k=0;k<=4;k++){const v=mx*k/4,yy=y(v);svg.append(sv("line",{x1:m.l,x2:W-m.r,y1:yy,y2:yy,stroke:"var(--line)"}));
+    const t=sv("text",{x:m.l-6,y:yy+4,"text-anchor":"end","font-size":"11",fill:"var(--muted)","font-family":"JetBrains Mono, monospace"});t.textContent=short(v);svg.append(t)}
+  [0,Math.round(Y/2),Y].filter((v,i,a)=>a.indexOf(v)===i).forEach(i=>{const t=sv("text",{x:x(i),y:H-6,"text-anchor":i===0?"start":i===Y?"end":"middle","font-size":"11",fill:"var(--muted)"});t.textContent=i===0?"hoy":`año ${i}`;svg.append(t)});
+  series.forEach((s,k)=>{svg.append(sv("polyline",{points:s.map((v,i)=>`${x(i)},${y(v)}`).join(" "),fill:"none",stroke:SC[k].c,"stroke-width":k===2?"2.5":"1.8","stroke-dasharray":k===0?"4 4":"none"}));
+    svg.append(sv("circle",{cx:x(Y),cy:y(s.at(-1)),r:3.5,fill:SC[k].c}))});
+  const box=$("scen");box.innerHTML="";box.append(el("h3",{},`En ${Y} año${Y>1?"s":""} tendrías`));
+  box.append(el("p",{class:"small muted"},`Pones en total ${cop(P+M*12*Y)}.`));
+  SC.forEach((s,k)=>{const d=el("div",{class:"s"});const l=el("span");l.append(el("i",{style:`display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;background:${s.c}`}),document.createTextNode(s.n));d.append(l,el("b",{class:"num"},cop(series[k].at(-1))));box.append(d)});
+  box.append(el("p",{class:"small muted"},"Tasas anuales después de inflación, como referencia. El S&P 500 ha dado cerca de 7 % al año en promedio histórico, con años muy malos en el medio."));
+  let after=0;PLAN.forEach(x=>{const v=P*(pct[x.id]??0)/100;after+=x.sym===null?v:x.sym==="VOO"?v*.7:v*.5});
+  $("crashA").textContent=cop(P);$("crashB").textContent=cop(after);
+}
+$("mensual").addEventListener("input",drawProj);$("anios").addEventListener("input",drawProj);
+
+/* Noticias */
+const NQ={ANT:"Anthropic",NVDA:"Nvidia",GOOGL:"Google Alphabet",META:"Meta Platforms",VOO:"S&P 500 bolsa"};
+let ntab=store.get("ntab")||"ANT";
+function buildNews(){
+  const tabs=$("tabs");tabs.innerHTML="";
+  Object.keys(NQ).forEach(k=>{const b=el("button",{class:"tab",role:"tab",type:"button","aria-selected":String(k===ntab)},k==="VOO"?"Mercado":INFO[k].n.split(" (")[0]);
+    b.addEventListener("click",()=>{ntab=k;store.set("ntab",k);buildNews()});tabs.append(b)});
+  const list=$("newsList");list.innerHTML="";
+  (D.noticias[ntab]||[]).forEach(n=>{if(!/^https:\/\//.test(n.enlace||""))return;
+    const a=el("a",{class:"item",href:n.enlace,target:"_blank",rel:"noopener"});a.append(el("span",{},n.titulo),el("span",{class:"meta"},`${n.fuente} · ${n.fecha}`));list.append(a)});
+  $("moreNews").href="https://news.google.com/search?q="+encodeURIComponent(NQ[ntab])+"&hl=es-419&gl=CO&ceid=CO:es-419";
+}
+
+/* Calendario */
+const EV=[
+  ["2026-12-09","Fed decide la tasa de interés de EE. UU.","Reunión 8 y 9 de dic.; anuncio el 9 a las 2 p. m. (hora Colombia). Mueve todo el mercado.",false],
+  ["2026-12-15","ANT: empleados pueden vender unas 303 millones de acciones","Cuando muchos pueden vender a la vez, el precio suele bajar esos días.",false],
+  ["2026-12-18","Banco de la República decide la tasa en Colombia","Hoy está en 12,25 %. Si la bajan, los CDT nuevos y las cajitas rinden menos.",false],
+  ["2027-01-28","Meta presenta resultados del año","Fecha estimada: suele ser a finales de enero.",true],
+  ["2027-02-03","Alphabet (Google) presenta resultados del año","Fecha estimada: suele ser a inicios de febrero.",true],
+  ["2027-02-24","Nvidia presenta resultados","Fecha estimada: suele ser a finales de febrero. Primeros con la CEO interina.",true],
+  ["2027-05-17","ANT: los fundadores pueden empezar a vender (hasta 29 %)","O antes, si Anthropic publica sus resultados del primer trimestre.",false],
+  ["2027-11-18","ANT: termina todo el bloqueo de venta","Desde aquí, todos los dueños grandes pueden vender.",false]
+];
+function buildCal(){
+  const box=$("cal");box.innerHTML="";const hoy=new Date(new Date().toDateString());
+  EV.forEach(([d,t,desc,aprox])=>{const dt=new Date(d+"T12:00"),days=Math.round((dt-hoy)/864e5);
+    const row=el("div",{class:"ev"+(days<0?" past":"")});
+    const dd=el("div",{class:"d"});dd.append(document.createTextNode(dt.toLocaleDateString("es-CO",{day:"numeric",month:"short"})),el("small",{},String(dt.getFullYear())));
+    const mid=el("div",{style:"display:grid;gap:2px;min-width:0"});const h=el("strong",{},t);mid.append(h);if(aprox)mid.append(el("span",{class:"tag"},"Fecha aprox."));mid.append(el("span",{class:"small muted"},desc));
+    row.append(dd,mid,el("span",{class:"left"},days<0?"pasó":days===0?"hoy":`en ${days} d`));box.append(row)});
+}
+
+/* Pasos */
+const STEPS=[
+  "Crear la cuenta en Nu (app Nu Colombia, con tu cédula).",
+  "Crear la cuenta en Lulo Bank (app, con tu cédula) y revisar tasa y monto mínimo del CDT.",
+  "Decidir: la parte en pesos en la cajita de Nu, en el CDT de Lulo o mitad y mitad.",
+  "Verificar la cuenta en Hapi.",
+  "Instalar la app ntfy y suscribirse al canal de alertas.",
+  "Depositar en Hapi por PSE, todo de una vez.",
+  "Comprar VOO.",
+  "Comprar la primera mitad de ANT con orden límite.",
+  "Comprar la primera mitad de Nvidia.",
+  "Comprar Google y Meta.",
+  "En 3-4 semanas: comprar la segunda mitad de ANT y de Nvidia.",
+  "Cada mes: juntar ahorro en Nu y pasarlo a Hapi cada 2-3 meses."
+];
+let done=store.get("done-v3")||[];
+function buildSteps(){
+  const ol=$("steps");ol.innerHTML="";
+  STEPS.forEach((s,i)=>{const li=el("li",{class:done.includes(i)?"done":""});const cb=el("input",{type:"checkbox",id:"s"+i});cb.checked=done.includes(i);
+    cb.addEventListener("change",()=>{done=cb.checked?[...new Set([...done,i])]:done.filter(d=>d!==i);store.set("done-v3",done);li.classList.toggle("done",cb.checked);stepProg()});
+    li.append(cb,el("label",{for:"s"+i},s));ol.append(li)});stepProg();
+}
+function stepProg(){$("stepCount").textContent=`${done.length} de ${STEPS.length}`;$("stepBar").style.width=(done.length/STEPS.length*100)+"%"}
+
+/* Enlaces */
+const LINKS=[
+  ["Hapi","Tu bróker: comprar y vender","https://hapi.trade/"],
+  ["Nu Colombia","Cajitas y CDT","https://nu.com.co/"],
+  ["Lulo Bank","CDT a 1 año","https://www.lulobank.com/"],
+  ["Comparador de CDT","Tasas de todos los bancos, actualizado","https://www.decidetubanco.com/"],
+  ["Calendario económico","Fechas de resultados y datos (Investing.com)","https://es.investing.com/economic-calendar/"],
+  ["Resultados por fecha","Qué empresas presentan cada día (Yahoo)","https://finance.yahoo.com/calendar/earnings"],
+  ["Anthropic ante la SEC","Documentos oficiales: prospecto, resultados","https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&company=anthropic&type=&dateb=&owner=include&count=40"],
+  ["Mapa del mercado","Qué sube y qué baja hoy (Finviz)","https://finviz.com/map.ashx"],
+  ["TRM oficial","Dólar en Colombia (Banco de la República)","https://www.banrep.gov.co/es/estadisticas/trm"],
+  ["Tasa del Banco de la República","Decisiones y calendario","https://www.banrep.gov.co/es/noticias/calendario-actividades-junta-directiva"],
+  ["La Fed","Calendario de reuniones","https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"]
+];
+LINKS.forEach(([t,s,u])=>{const a=el("a",{class:"lk",href:u,target:"_blank",rel:"noopener"});a.append(el("b",{},t+" ↗"),el("small",{},s));$("links").append(a)});
+/* Se recarga sola cada 15 minutos si la pestaña está a la vista */
+setInterval(()=>{if(document.visibilityState==="visible")location.reload()},15*60*1000);
+
+$("total").addEventListener("input",calc);$("trm").addEventListener("input",calc);
+$("reset").addEventListener("click",()=>{pct=Object.fromEntries(PLAN.map(x=>[x.id,x.p]));store.set("pct",pct);buildRows();calc()});
+buildCards();buildRows();calc();drawBig();buildNews();buildCal();buildSteps();
+let rt;addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(()=>{drawBig();drawProj()},150)});
+</script>

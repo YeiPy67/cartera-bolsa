@@ -1,0 +1,32 @@
+name: Actualizar cartera y alertas
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"   # cada 30 minutos
+  workflow_dispatch:          # botón para correrlo a mano
+
+permissions:
+  contents: write
+
+concurrency:
+  group: actualizar
+  cancel-in-progress: false
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Alertas al celular
+        env:
+          NTFY_CANAL: ${{ secrets.NTFY_CANAL }}
+        run: python3 alertas.py
+      - name: Datos y página
+        run: python3 pagina/datos.py && python3 pagina/armar.py
+      - name: Guardar cambios
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add estado.json docs/index.html
+          git diff --cached --quiet || git commit -m "Actualización automática" && git push

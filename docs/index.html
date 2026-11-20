@@ -1,0 +1,554 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex"><style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>Mi cartera</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: panel de una columna ancha; nav pegajosa por secciones; tarjetas de mercado en rejilla que pasan a 1 columna en celular */
+:root{
+  --bg:#f2f5f4; --surface:#ffffff; --sunk:#e9efed; --fg:#13201c; --muted:#5a6a65; --line:#d6dfdc;
+  --accent:#0f7a5c; --accent-soft:#d9eee6; --up:#11804f; --down:#c23a2b; --down-soft:#fbe3df; --warn:#a85a10; --warn-soft:#fbeadb;
+  --c1:#3d8f74; --c2:#2f5fa7; --c3:#c0623a; --c4:#7a8f2a; --c5:#8a4fb0; --c6:#c79a1e;
+  --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --body:"Inter",system-ui,-apple-system,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e1614; --surface:#15201d; --sunk:#1b2925; --fg:#e3ebe8; --muted:#92a29d; --line:#263430;
+  --accent:#45c79c; --accent-soft:#173a2f; --up:#4fd08f; --down:#ff7a6b; --down-soft:#3d1d19; --warn:#f0a868; --warn-soft:#3a2716;
+  --c1:#5fbf9c; --c2:#6f9be0; --c3:#e58a62; --c4:#a9c24d; --c5:#b685d8; --c6:#e3bd4c; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e1614; --surface:#15201d; --sunk:#1b2925; --fg:#e3ebe8; --muted:#92a29d; --line:#263430;
+  --accent:#45c79c; --accent-soft:#173a2f; --up:#4fd08f; --down:#ff7a6b; --down-soft:#3d1d19; --warn:#f0a868; --warn-soft:#3a2716;
+  --c1:#5fbf9c; --c2:#6f9be0; --c3:#e58a62; --c4:#a9c24d; --c5:#b685d8; --c6:#e3bd4c; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:15px/1.55 var(--body)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.gut{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1040px;margin:0 auto}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(1.8rem,4vw,2.5rem);font-weight:700}
+h2{font-size:1.4rem;font-weight:700}
+h3{font-size:1.05rem;font-weight:700}
+p{margin:0}
+a{color:var(--accent)}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.small{font-size:.84rem}
+.eyebrow{font:600 .72rem/1 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+header.top{padding-block:28px 18px;display:grid;gap:8px}
+nav.secs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-block:1px solid var(--line)}
+nav.secs .wrap{display:flex;gap:4px;overflow-x:auto;padding-block:6px;scrollbar-width:none}
+nav.secs a{flex:none;text-decoration:none;color:var(--muted);font-weight:500;font-size:.88rem;padding:6px 12px;border-radius:99px}
+nav.secs a:hover,nav.secs a:focus-visible{background:var(--sunk);color:var(--fg)}
+main{padding-block:24px 72px;display:grid;gap:48px}
+section{display:grid;gap:16px;scroll-margin-top:64px}
+.sec-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* Nota del día */
+.nota{display:grid;gap:10px;border-left:4px solid var(--down)}
+.nota ul{margin:0;padding-left:1.1em;display:grid;gap:6px}
+.nota .parati{background:var(--sunk);border-radius:10px;padding:10px 12px}
+.movers{display:flex;flex-wrap:wrap;gap:8px}
+.mv{display:inline-flex;gap:8px;align-items:baseline;background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:6px 14px;font-weight:600}
+
+/* Mercado */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:8px;cursor:pointer;text-align:left;font:inherit;color:inherit;width:100%}
+.card[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.card .row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.card .sym{font:700 1.05rem var(--display)}
+.card .nm{font-size:.78rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .px{font:600 1.3rem var(--mono)}
+.chg{font:600 .85rem var(--mono);padding:2px 7px;border-radius:6px}
+.chg.up{color:var(--up);background:var(--accent-soft)}
+.chg.dn{color:var(--down);background:var(--down-soft)}
+.range{display:grid;gap:3px;font-size:.72rem;color:var(--muted)}
+.range .track{position:relative;height:6px;border-radius:3px;background:var(--sunk)}
+.range .pin{position:absolute;top:-3px;width:4px;height:12px;border-radius:2px;background:var(--fg);transform:translateX(-50%)}
+.range .ends{display:flex;justify-content:space-between}
+svg.spark{width:100%;height:46px;display:block}
+.detail{display:grid;gap:10px}
+.detail .links{display:flex;flex-wrap:wrap;gap:8px}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;font-weight:500;text-decoration:none;border:1px solid var(--line);border-radius:99px;padding:4px 12px;color:var(--fg);background:var(--surface)}
+.pill:hover{border-color:var(--accent)}
+.chartbox{position:relative}
+svg.big{width:100%;display:block}
+.tip{position:absolute;pointer-events:none;background:var(--fg);color:var(--bg);font:500 .78rem var(--mono);padding:4px 8px;border-radius:6px;white-space:nowrap;transform:translate(-50%,-120%)}
+
+/* Plan */
+.plan{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:720px){.plan{grid-template-columns:minmax(0,1fr)}}
+.donutbox{display:grid;place-items:center;gap:8px}
+svg.donut{width:200px;height:200px;max-width:100%}
+.controls{display:flex;flex-wrap:wrap;gap:12px}
+.field{display:grid;gap:4px;flex:1 1 150px}
+.field label{font-size:.8rem;color:var(--muted)}
+input[type=number]{font:600 1rem var(--mono);color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.tablebox{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:14px}
+table{width:100%;border-collapse:collapse;min-width:620px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.72rem;color:var(--muted);font-weight:600;letter-spacing:.05em;text-transform:uppercase}
+tr:last-child td{border-bottom:0}
+.r{text-align:right}
+td input[type=number]{width:70px;padding:4px 6px;font-size:.9rem;text-align:right}
+.nm2{display:flex;gap:8px;align-items:flex-start}
+.dot{width:10px;height:10px;border-radius:3px;flex:none;margin-top:6px}
+.nm2 small{display:block;color:var(--muted);font-size:.8rem;line-height:1.4}
+.chip{display:inline-block;font-size:.72rem;font-weight:600;padding:2px 8px;border-radius:99px;white-space:nowrap}
+.low{background:var(--accent-soft);color:var(--accent)}
+.mid{background:var(--sunk);color:var(--fg)}
+.high{background:var(--warn-soft);color:var(--warn)}
+.totals{display:flex;flex-wrap:wrap;gap:8px 24px;font-size:.9rem;align-items:center}
+.totals b{font-family:var(--mono)}
+.bad{color:var(--down);font-weight:600}
+button.ghost{font:500 .8rem var(--body);background:none;border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:5px 10px;cursor:pointer}
+
+/* Proyección */
+.proj{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,280px);gap:16px}
+@media (max-width:760px){.proj{grid-template-columns:minmax(0,1fr)}}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:.82rem}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:14px;height:3px;border-radius:2px;display:inline-block}
+.scen{display:grid;gap:8px}
+.scen .s{display:flex;justify-content:space-between;gap:8px;padding:8px 10px;border-radius:10px;background:var(--sunk);font-size:.9rem}
+.crash{display:grid;gap:6px}
+
+/* Noticias */
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tab{font:600 .85rem var(--body);border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:99px;padding:5px 14px;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.news{display:grid;gap:0;background:var(--surface);border:1px solid var(--line);border-radius:14px}
+.news a.item{display:grid;gap:2px;padding:12px 16px;text-decoration:none;color:var(--fg);border-bottom:1px solid var(--line)}
+.news a.item:last-child{border-bottom:0}
+.news a.item:hover{background:var(--sunk)}
+.news .meta{font-size:.78rem;color:var(--muted)}
+
+/* Calendario */
+.cal{display:grid;gap:0;background:var(--surface);border:1px solid var(--line);border-radius:14px}
+.ev{display:grid;grid-template-columns:76px minmax(0,1fr) auto;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);align-items:start}
+.ev:last-child{border-bottom:0}
+.ev .d{font:600 .85rem var(--mono);line-height:1.3}
+.ev .d small{display:block;font-weight:400;color:var(--muted)}
+.ev .left{font:600 .75rem var(--mono);color:var(--muted);white-space:nowrap}
+.ev.past{opacity:.5}
+.tag{font-size:.7rem;font-weight:600;color:var(--warn)}
+
+/* Pasos y enlaces */
+ol.steps{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+ol.steps li{display:flex;gap:10px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+ol.steps input{margin-top:4px;accent-color:var(--accent);width:18px;height:18px;flex:none}
+ol.steps li.done label{color:var(--muted);text-decoration:line-through}
+.progress{height:6px;border-radius:3px;background:var(--sunk);overflow:hidden}
+.progress i{display:block;height:100%;background:var(--accent);transition:width .3s}
+.links-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.lk{display:grid;gap:2px;text-decoration:none;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.lk:hover{border-color:var(--accent)}
+.lk small{color:var(--muted);font-size:.8rem}
+.lk b{font-weight:600}
+.alerta{display:grid;gap:6px}
+.copy{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.copy code{font:600 .95rem var(--mono);background:var(--sunk);padding:4px 10px;border-radius:6px}
+footer{font-size:.8rem;color:var(--muted);display:grid;gap:6px}
+footer ul{margin:0;padding-left:1.1em}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="top gut"><div class="wrap" style="display:grid;gap:8px">
+  <span class="eyebrow">Plan personal · Colombia · Hapi</span>
+  <h1>Mi cartera</h1>
+  <p class="muted">Se actualiza sola cada 30 minutos. Última vez: <span class="num" id="gen"></span> (hora Colombia).</p>
+</div></header>
+
+<nav class="secs" aria-label="Secciones"><div class="wrap gut">
+  <a href="#hoy">Hoy</a><a href="#mercado">Mercado</a><a href="#plan">Mi plan</a><a href="#futuro">Qué puede pasar</a><a href="#noticias">Noticias</a><a href="#calendario">Fechas</a><a href="#pasos">Pasos</a><a href="#vigilar">Dónde vigilar</a>
+</div></nav>
+
+<main class="gut"><div class="wrap" style="display:grid;gap:48px">
+
+<section id="hoy">
+  <div class="sec-head"><h2>Hoy</h2><span class="small muted">Cambio del día</span></div>
+  <div class="movers" id="movers"></div>
+  <div class="panel nota" id="notaBox" hidden>
+    <span class="eyebrow" style="color:var(--down)" id="notaFecha"></span>
+    <h2 id="notaTitulo"></h2>
+    <ul id="notaPuntos"></ul>
+    <p class="parati"><b>Para ti: </b><span id="notaParaTi"></span></p>
+  </div>
+</section>
+
+<section id="mercado">
+  <div class="sec-head"><h2>Mercado</h2><span class="small muted">Toca una tarjeta para ver su gráfico</span></div>
+  <div class="cards" id="cards"></div>
+  <div class="panel detail" id="detail">
+    <div class="sec-head"><h3 id="dTitle"></h3><span class="small muted" id="dSub"></span></div>
+    <div class="chartbox" id="chartbox"><svg class="big" id="big" role="img" aria-label="Gráfico de precio"></svg><div class="tip" id="tip" hidden></div></div>
+    <div class="links" id="dLinks"></div>
+  </div>
+</section>
+
+<section id="plan">
+  <div class="sec-head"><h2>Mi plan</h2><button class="ghost" id="reset" type="button">Volver al reparto sugerido</button></div>
+  <div class="controls">
+    <div class="field"><label for="total">Plata total (pesos) · escribe la tuya, se guarda solo en este navegador</label><input id="total" type="number" min="0" step="10000"></div>
+    <div class="field"><label for="trm">Dólar (pesos por 1 USD)</label><input id="trm" type="number" min="1000" step="10"></div>
+  </div>
+  <div class="plan">
+    <div class="donutbox"><svg class="donut" id="donut" viewBox="0 0 200 200" role="img" aria-label="Reparto de la cartera"></svg><span class="small muted" id="donutNote"></span></div>
+    <div style="display:grid;gap:12px;min-width:0">
+      <div class="tablebox"><table>
+        <thead><tr><th>Dónde</th><th>Riesgo</th><th class="r">%</th><th class="r">Pesos</th><th class="r">Dólares</th><th class="r">Acciones</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table></div>
+      <div class="totals">
+        <span>Pasar a Hapi (un solo depósito): <b id="tHapi"></b></span>
+        <span>Dejar en Nu o Lulo: <b id="tPesos"></b></span>
+        <span id="sum"></span>
+      </div>
+      <p class="small muted">“Acciones” es la fracción que compras al precio de hoy. VOO ya incluye a Nvidia, Google y Meta; comprarlas aparte les da más peso.</p>
+    </div>
+  </div>
+</section>
+
+<section id="futuro">
+  <div class="sec-head"><h2>Qué puede pasar</h2></div>
+  <p class="muted" style="max-width:68ch">Nadie puede predecir el precio de una acción. Lo que sí se puede ver es cómo crece la plata con el tiempo en distintos escenarios, y qué le pasaría a tu cartera en una caída fuerte.</p>
+  <div class="proj">
+    <div class="panel" style="display:grid;gap:12px">
+      <div class="controls">
+        <div class="field"><label for="mensual">Ahorro cada mes: <b class="num" id="mensualV"></b></label><input id="mensual" type="range" min="0" max="500000" step="10000" value="100000"></div>
+        <div class="field"><label for="anios">Años: <b class="num" id="aniosV"></b></label><input id="anios" type="range" min="1" max="30" step="1" value="10"></div>
+      </div>
+      <div class="chartbox"><svg class="big" id="projChart" role="img" aria-label="Proyección de crecimiento"></svg></div>
+      <div class="legend"><span><i style="background:var(--muted)"></i>Solo guardado (0 %)</span><span><i style="background:var(--c2)"></i>Malo 3 %</span><span><i style="background:var(--accent)"></i>Normal 7 %</span><span><i style="background:var(--c6)"></i>Bueno 10 %</span></div>
+    </div>
+    <div style="display:grid;gap:12px;align-content:start">
+      <div class="panel scen" id="scen"></div>
+      <div class="panel crash">
+        <h3>Si viene una caída fuerte</h3>
+        <p class="small muted">Ejemplo de crisis: VOO −30 %, acciones sueltas −50 %, pesos 0 %.</p>
+        <p>Tu cartera pasaría de <b class="num" id="crashA"></b> a <b class="num" id="crashB"></b>.</p>
+        <p class="small muted">En crisis pasadas el S&amp;P 500 se recuperó, pero tardó de meses a años. Por eso solo se invierte plata que no vas a necesitar pronto.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="noticias">
+  <div class="sec-head"><h2>Noticias</h2><a class="small" id="moreNews" target="_blank" rel="noopener">Ver más en Google Noticias</a></div>
+  <div class="tabs" role="tablist" id="tabs"></div>
+  <div class="news" id="newsList"></div>
+</section>
+
+<section id="calendario">
+  <div class="sec-head"><h2>Fechas para estar pendiente</h2></div>
+  <div class="cal" id="cal"></div>
+</section>
+
+<section id="pasos">
+  <div class="sec-head"><h2>Pasos</h2><span class="small muted num" id="stepCount"></span></div>
+  <div class="progress"><i id="stepBar"></i></div>
+  <ol class="steps" id="steps"></ol>
+</section>
+
+<section id="vigilar">
+  <div class="sec-head"><h2>Dónde vigilar</h2></div>
+  <div class="panel alerta">
+    <h3>Tus alertas al celular</h3>
+    <p class="small">Cada 30 minutos se revisan las noticias y los precios, y si pasa algo grande te llega un aviso a la app <b>ntfy</b>, aunque tu PC esté apagado. El canal está guardado en tu app; no se muestra aquí porque esta página es pública.</p>
+  </div>
+  <div class="links-grid" id="links"></div>
+</section>
+
+<footer>
+  <strong>Fuentes</strong>
+  <ul>
+    <li>Precios: Yahoo Finance. Noticias: Google Noticias. Bajados el día indicado arriba.</li>
+    <li><a href="https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm" target="_blank" rel="noopener">Calendario de la Fed</a> · <a href="https://www.banrep.gov.co/es/noticias/calendario-actividades-junta-directiva/reunion-diciembre-2026" target="_blank" rel="noopener">Banco de la República, diciembre 2026</a></li>
+    <li><a href="https://aistockwire.com/blog/anthropic-ant-ipo-lockup-expiration-dates-calendar" target="_blank" rel="noopener">Calendario de desbloqueo de ANT – AI Stock Wire</a> · <a href="https://www.nacionale.com/en/articles/when-does-anthropic-lockup-expire-insiders-sell-shares-dates-december-15-may-2027" target="_blank" rel="noopener">Nacionale</a></li>
+    <li><a href="https://finanzasplus.co/comparar/cdts" target="_blank" rel="noopener">Tasas de CDT – FinanzasPlus</a> · <a href="https://finanzasplus.co/comparar/brokers/hapi" target="_blank" rel="noopener">Comisiones de Hapi – FinanzasPlus</a></li>
+  </ul>
+  <p>Las fechas marcadas “aprox.” son estimadas por cómo informan cada año; la empresa las confirma unas semanas antes. Esto no es asesoría de un asesor con licencia.</p>
+</footer>
+
+</div></main>
+
+<script id="datos" type="application/json">{"generado": "2026-11-20T23:58+00:00", "precios": {"VOO": {"nombre": "Vanguard S&P 500 ETF", "precio": 635.54, "cambio_dia": -3.42, "max52": 718.47, "min52": 578.46, "serie": [["2026-05-21", 682.84], ["2026-05-22", 685.55], ["2026-05-26", 690.01], ["2026-05-27", 689.96], ["2026-05-28", 693.91], ["2026-05-29", 695.49], ["2026-06-01", 697.3], ["2026-06-02", 698.26], ["2026-06-03", 693.36], ["2026-06-04", 696.06], ["2026-06-05", 678.0], ["2026-06-08", 679.68], ["2026-06-09", 677.7], ["2026-06-10", 667.05], ["2026-06-11", 678.23], ["2026-06-12", 681.95], ["2026-06-15", 693.83], ["2026-06-16", 689.75], ["2026-06-17", 681.41], ["2026-06-18", 688.11], ["2026-06-22", 686.1], ["2026-06-23", 676.34], ["2026-06-24", 675.69], ["2026-06-25", 675.71], ["2026-06-26", 670.26], ["2026-06-29", 681.01], ["2026-06-30", 686.81], ["2026-07-01", 685.46], ["2026-07-02", 684.84], ["2026-07-06", 690.62], ["2026-07-07", 687.08], ["2026-07-08", 685.26], ["2026-07-09", 690.69], ["2026-07-10", 693.86], ["2026-07-13", 688.5], ["2026-07-14", 691.1], ["2026-07-15", 693.8], ["2026-07-16", 690.14], ["2026-07-17", 683.17], ["2026-07-20", 682.21], ["2026-07-21", 687.87], ["2026-07-22", 687.03], ["2026-07-23", 678.61], ["2026-07-24", 679.14], ["2026-07-27", 679.31], ["2026-07-28", 680.96], ["2026-07-29", 670.63], ["2026-07-30", 681.79], ["2026-07-31", 686.65], ["2026-08-03", 696.4], ["2026-08-04", 708.98], ["2026-08-05", 707.6], ["2026-08-06", 706.4], ["2026-08-07", 710.71], ["2026-08-10", 710.65], ["2026-08-11", 708.42], ["2026-08-12", 710.17], ["2026-08-13", 714.95], ["2026-08-14", 713.61], ["2026-08-17", 710.27], ["2026-08-18", 705.4], ["2026-08-19", 706.91], ["2026-08-20", 701.01], ["2026-08-21", 703.71], ["2026-08-24", 701.83], ["2026-08-25", 704.02], ["2026-08-26", 704.2], ["2026-08-27", 708.75], ["2026-08-28", 707.24], ["2026-08-31", 704.89], ["2026-09-01", 700.28], ["2026-09-02", 703.41], ["2026-09-03", 710.72], ["2026-09-04", 708.01], ["2026-09-08", 704.07], ["2026-09-09", 700.87], ["2026-09-10", 696.65], ["2026-09-11", 702.56], ["2026-09-14", 699.3], ["2026-09-15", 696.2], ["2026-09-16", 693.24], ["2026-09-17", 701.03], ["2026-09-18", 701.78], ["2026-09-21", 712.78], ["2026-09-22", 712.78], ["2026-09-23", 707.6], ["2026-09-24", 706.99], ["2026-09-25", 710.79], ["2026-09-28", 703.61], ["2026-09-29", 702.46], ["2026-09-30", 700.86], ["2026-10-01", 702.35], ["2026-10-02", 707.54], ["2026-10-05", 712.32], ["2026-10-06", 716.2], ["2026-10-07", 714.34], ["2026-10-08", 711.28], ["2026-10-09", 715.59], ["2026-10-12", 715.13], ["2026-10-13", 715.2], ["2026-10-14", 707.43], ["2026-10-15", 709.43], ["2026-10-16", 701.61], ["2026-10-19", 704.6], ["2026-10-20", 706.8], ["2026-10-21", 710.72], ["2026-10-22", 702.3], ["2026-10-23", 698.58], ["2026-10-26", 703.41], ["2026-10-27", 707.52], ["2026-10-28", 709.9], ["2026-10-29", 707.32], ["2026-10-30", 694.81], ["2026-11-02", 691.32], ["2026-11-03", 693.54], ["2026-11-04", 704.78], ["2026-11-05", 673.97], ["2026-11-06", 675.99], ["2026-11-09", 691.87], ["2026-11-10", 689.5], ["2026-11-11", 698.35], ["2026-11-12", 696.0], ["2026-11-13", 693.38], ["2026-11-16", 680.26], ["2026-11-17", 673.19], ["2026-11-18", 671.31], ["2026-11-19", 658.01], ["2026-11-20", 635.54]]}, "ANT": {"nombre": "Anthropic, PBC", "precio": 88.91, "cambio_dia": -8.5, "max52": 115.1, "min52": 83.05, "serie": [["2026-11-19", 97.17], ["2026-11-20", 88.91]]}, "NVDA": {"nombre": "NVIDIA Corporation", "precio": 125.53, "cambio_dia": -14.01, "max52": 243.37, "min52": 124.5, "serie": [["2026-05-21", 219.51], ["2026-05-22", 215.33], ["2026-05-26", 214.86], ["2026-05-27", 212.6], ["2026-05-28", 214.25], ["2026-05-29", 211.14], ["2026-06-01", 224.36], ["2026-06-02", 222.82], ["2026-06-03", 214.75], ["2026-06-04", 218.66], ["2026-06-05", 205.1], ["2026-06-08", 208.64], ["2026-06-09", 208.19], ["2026-06-10", 200.42], ["2026-06-11", 204.87], ["2026-06-12", 205.19], ["2026-06-15", 212.45], ["2026-06-16", 207.41], ["2026-06-17", 204.65], ["2026-06-18", 210.69], ["2026-06-22", 208.65], ["2026-06-23", 200.04], ["2026-06-24", 199.0], ["2026-06-25", 195.74], ["2026-06-26", 192.53], ["2026-06-29", 194.97], ["2026-06-30", 200.09], ["2026-07-01", 197.58], ["2026-07-02", 194.83], ["2026-07-06", 195.55], ["2026-07-07", 196.93], ["2026-07-08", 204.12], ["2026-07-09", 202.78], ["2026-07-10", 210.96], ["2026-07-13", 203.53], ["2026-07-14", 211.8], ["2026-07-15", 212.5], ["2026-07-16", 207.4], ["2026-07-17", 202.81], ["2026-07-20", 203.28], ["2026-07-21", 207.29], ["2026-07-22", 212.06], ["2026-07-23", 208.76], ["2026-07-24", 206.84], ["2026-07-27", 196.51], ["2026-07-28", 197.01], ["2026-07-29", 190.01], ["2026-07-30", 195.04], ["2026-07-31", 200.75], ["2026-08-03", 206.64], ["2026-08-04", 211.94], ["2026-08-05", 219.22], ["2026-08-06", 218.99], ["2026-08-07", 223.96], ["2026-08-10", 217.55], ["2026-08-11", 217.5], ["2026-08-12", 224.09], ["2026-08-13", 225.3], ["2026-08-14", 225.16], ["2026-08-17", 225.01], ["2026-08-18", 219.74], ["2026-08-19", 217.56], ["2026-08-20", 216.85], ["2026-08-21", 214.72], ["2026-08-24", 208.48], ["2026-08-25", 213.05], ["2026-08-26", 209.66], ["2026-08-27", 227.98], ["2026-08-28", 217.55], ["2026-08-31", 220.78], ["2026-09-01", 217.44], ["2026-09-02", 224.41], ["2026-09-03", 228.45], ["2026-09-04", 230.36], ["2026-09-08", 225.73], ["2026-09-09", 223.67], ["2026-09-10", 218.36], ["2026-09-11", 218.29], ["2026-09-14", 210.96], ["2026-09-15", 212.17], ["2026-09-16", 213.9], ["2026-09-17", 219.34], ["2026-09-18", 222.27], ["2026-09-21", 227.38], ["2026-09-22", 228.87], ["2026-09-23", 225.51], ["2026-09-24", 224.58], ["2026-09-25", 225.07], ["2026-09-28", 228.86], ["2026-09-29", 227.21], ["2026-09-30", 228.38], ["2026-10-01", 230.86], ["2026-10-02", 233.95], ["2026-10-05", 238.9], ["2026-10-06", 239.24], ["2026-10-07", 237.47], ["2026-10-08", 230.48], ["2026-10-09", 229.28], ["2026-10-12", 226.32], ["2026-10-13", 228.52], ["2026-10-14", 221.3], ["2026-10-15", 217.23], ["2026-10-16", 214.13], ["2026-10-19", 217.09], ["2026-10-20", 216.47], ["2026-10-21", 221.97], ["2026-10-22", 212.21], ["2026-10-23", 210.96], ["2026-10-26", 216.0], ["2026-10-27", 217.94], ["2026-10-28", 215.38], ["2026-10-29", 213.66], ["2026-10-30", 204.64], ["2026-11-02", 202.06], ["2026-11-03", 206.69], ["2026-11-04", 200.13], ["2026-11-05", 181.6], ["2026-11-06", 186.64], ["2026-11-09", 178.67], ["2026-11-10", 168.89], ["2026-11-11", 173.73], ["2026-11-12", 166.19], ["2026-11-13", 162.85], ["2026-11-16", 156.14], ["2026-11-17", 155.46], ["2026-11-18", 150.96], ["2026-11-19", 145.98], ["2026-11-20", 125.53]]}, "GOOGL": {"nombre": "Alphabet Inc.", "precio": 265.29, "cambio_dia": -2.7, "max52": 408.61, "min52": 264.22, "serie": [["2026-05-21", 387.66], ["2026-05-22", 382.97], ["2026-05-26", 388.88], ["2026-05-27", 388.83], ["2026-05-28", 390.13], ["2026-05-29", 380.34], ["2026-06-01", 376.37], ["2026-06-02", 361.85], ["2026-06-03", 358.99], ["2026-06-04", 372.19], ["2026-06-05", 368.53], ["2026-06-08", 363.31], ["2026-06-09", 364.26], ["2026-06-10", 356.38], ["2026-06-11", 357.77], ["2026-06-12", 359.68], ["2026-06-15", 369.35], ["2026-06-16", 373.25], ["2026-06-17", 363.79], ["2026-06-18", 368.03], ["2026-06-22", 349.68], ["2026-06-23", 346.13], ["2026-06-24", 345.29], ["2026-06-25", 343.71], ["2026-06-26", 337.39], ["2026-06-29", 353.65], ["2026-06-30", 357.37], ["2026-07-01", 361.21], ["2026-07-02", 359.91], ["2026-07-06", 366.46], ["2026-07-07", 367.03], ["2026-07-08", 361.92], ["2026-07-09", 358.89], ["2026-07-10", 357.18], ["2026-07-13", 352.51], ["2026-07-14", 359.51], ["2026-07-15", 370.92], ["2026-07-16", 354.46], ["2026-07-17", 346.77], ["2026-07-20", 351.99], ["2026-07-21", 347.15], ["2026-07-22", 342.09], ["2026-07-23", 317.69], ["2026-07-24", 319.74], ["2026-07-27", 326.56], ["2026-07-28", 333.71], ["2026-07-29", 336.71], ["2026-07-30", 333.66], ["2026-07-31", 356.13], ["2026-08-03", 373.51], ["2026-08-04", 377.65], ["2026-08-05", 362.43], ["2026-08-06", 357.75], ["2026-08-07", 354.3], ["2026-08-10", 357.52], ["2026-08-11", 343.8], ["2026-08-12", 343.54], ["2026-08-13", 346.36], ["2026-08-14", 345.9], ["2026-08-17", 344.0], ["2026-08-18", 344.2], ["2026-08-19", 344.72], ["2026-08-20", 340.67], ["2026-08-21", 344.82], ["2026-08-24", 348.06], ["2026-08-25", 346.96], ["2026-08-26", 342.0], ["2026-08-27", 340.65], ["2026-08-28", 346.59], ["2026-08-31", 339.35], ["2026-09-01", 335.02], ["2026-09-02", 337.12], ["2026-09-03", 342.48], ["2026-09-04", 338.46], ["2026-09-08", 338.36], ["2026-09-09", 330.65], ["2026-09-10", 332.6], ["2026-09-11", 338.5], ["2026-09-14", 349.39], ["2026-09-15", 344.98], ["2026-09-16", 342.87], ["2026-09-17", 347.33], ["2026-09-18", 349.54], ["2026-09-21", 354.97], ["2026-09-22", 351.16], ["2026-09-23", 337.83], ["2026-09-24", 342.36], ["2026-09-25", 343.92], ["2026-09-28", 342.75], ["2026-09-29", 340.92], ["2026-09-30", 344.08], ["2026-10-01", 338.24], ["2026-10-02", 343.5], ["2026-10-05", 346.47], ["2026-10-06", 347.68], ["2026-10-07", 350.5], ["2026-10-08", 348.29], ["2026-10-09", 351.66], ["2026-10-12", 352.72], ["2026-10-13", 353.78], ["2026-10-14", 347.64], ["2026-10-15", 349.22], ["2026-10-16", 340.59], ["2026-10-19", 344.18], ["2026-10-20", 340.28], ["2026-10-21", 334.76], ["2026-10-22", 324.22], ["2026-10-23", 320.21], ["2026-10-26", 316.8], ["2026-10-27", 320.58], ["2026-10-28", 324.89], ["2026-10-29", 283.82], ["2026-10-30", 279.84], ["2026-11-02", 278.99], ["2026-11-03", 280.03], ["2026-11-04", 288.93], ["2026-11-05", 282.57], ["2026-11-06", 284.78], ["2026-11-09", 288.15], ["2026-11-10", 287.38], ["2026-11-11", 293.45], ["2026-11-12", 298.7], ["2026-11-13", 295.77], ["2026-11-16", 283.72], ["2026-11-17", 280.2], ["2026-11-18", 282.44], ["2026-11-19", 272.66], ["2026-11-20", 265.29]]}, "META": {"nombre": "Meta Platforms, Inc.", "precio": 560.84, "cambio_dia": -5.93, "max52": 779.82, "min52": 520.26, "serie": [["2026-05-21", 607.38], ["2026-05-22", 610.26], ["2026-05-26", 612.34], ["2026-05-27", 635.26], ["2026-05-28", 635.29], ["2026-05-29", 632.51], ["2026-06-01", 600.47], ["2026-06-02", 597.63], ["2026-06-03", 622.98], ["2026-06-04", 627.57], ["2026-06-05", 593.0], ["2026-06-08", 585.39], ["2026-06-09", 584.59], ["2026-06-10", 570.98], ["2026-06-11", 568.43], ["2026-06-12", 566.98], ["2026-06-15", 593.48], ["2026-06-16", 600.21], ["2026-06-17", 567.58], ["2026-06-18", 577.22], ["2026-06-22", 563.85], ["2026-06-23", 562.2], ["2026-06-24", 557.67], ["2026-06-25", 542.87], ["2026-06-26", 550.25], ["2026-06-29", 562.6], ["2026-06-30", 563.29], ["2026-07-01", 612.91], ["2026-07-02", 582.9], ["2026-07-06", 600.29], ["2026-07-07", 615.58], ["2026-07-08", 603.12], ["2026-07-09", 631.48], ["2026-07-10", 669.21], ["2026-07-13", 656.73], ["2026-07-14", 661.04], ["2026-07-15", 681.31], ["2026-07-16", 664.54], ["2026-07-17", 646.01], ["2026-07-20", 645.85], ["2026-07-21", 643.81], ["2026-07-22", 627.17], ["2026-07-23", 606.1], ["2026-07-24", 595.19], ["2026-07-27", 593.87], ["2026-07-28", 593.41], ["2026-07-29", 585.61], ["2026-07-30", 539.03], ["2026-07-31", 556.71], ["2026-08-03", 590.24], ["2026-08-04", 587.94], ["2026-08-05", 588.77], ["2026-08-06", 589.9], ["2026-08-07", 592.1], ["2026-08-10", 594.92], ["2026-08-11", 599.12], ["2026-08-12", 578.85], ["2026-08-13", 594.97], ["2026-08-14", 589.85], ["2026-08-17", 568.97], ["2026-08-18", 543.67], ["2026-08-19", 546.03], ["2026-08-20", 545.83], ["2026-08-21", 549.9], ["2026-08-24", 559.02], ["2026-08-25", 570.05], ["2026-08-26", 576.14], ["2026-08-27", 571.1], ["2026-08-28", 578.02], ["2026-08-31", 572.34], ["2026-09-01", 578.54], ["2026-09-02", 592.85], ["2026-09-03", 610.68], ["2026-09-04", 616.77], ["2026-09-08", 613.48], ["2026-09-09", 653.69], ["2026-09-10", 644.38], ["2026-09-11", 648.03], ["2026-09-14", 665.6], ["2026-09-15", 670.24], ["2026-09-16", 673.31], ["2026-09-17", 682.31], ["2026-09-18", 665.75], ["2026-09-21", 741.25], ["2026-09-22", 736.6], ["2026-09-23", 744.1], ["2026-09-24", 777.59], ["2026-09-25", 751.66], ["2026-09-28", 715.62], ["2026-09-29", 738.79], ["2026-09-30", 725.18], ["2026-10-01", 725.93], ["2026-10-02", 728.08], ["2026-10-05", 741.9], ["2026-10-06", 738.88], ["2026-10-07", 721.31], ["2026-10-08", 720.89], ["2026-10-09", 718.67], ["2026-10-12", 742.96], ["2026-10-13", 762.5], ["2026-10-14", 737.54], ["2026-10-15", 736.72], ["2026-10-16", 709.33], ["2026-10-19", 705.44], ["2026-10-20", 694.25], ["2026-10-21", 697.52], ["2026-10-22", 648.85], ["2026-10-23", 642.62], ["2026-10-26", 630.56], ["2026-10-27", 620.19], ["2026-10-28", 612.49], ["2026-10-29", 624.52], ["2026-10-30", 614.99], ["2026-11-02", 606.73], ["2026-11-03", 621.03], ["2026-11-04", 630.0], ["2026-11-05", 605.08], ["2026-11-06", 610.15], ["2026-11-09", 641.37], ["2026-11-10", 641.39], ["2026-11-11", 628.77], ["2026-11-12", 623.61], ["2026-11-13", 641.69], ["2026-11-16", 626.41], ["2026-11-17", 618.87], ["2026-11-18", 616.38], ["2026-11-19", 596.22], ["2026-11-20", 560.84]]}, "COP=X": {"nombre": "USD/COP", "precio": 3483.34, "cambio_dia": 1.79, "max52": 3886.42, "min52": 3035.33, "serie": [["2026-05-20", 3724.85], ["2026-05-21", 3690.83], ["2026-05-24", 3679.93], ["2026-05-25", 3632.61], ["2026-05-26", 3672.19], ["2026-05-27", 3635.66], ["2026-05-28", 3651.3], ["2026-05-31", 3679.3], ["2026-06-01", 3565.52], ["2026-06-02", 3587.26], ["2026-06-03", 3575.07], ["2026-06-04", 3577.67], ["2026-06-07", 3604.26], ["2026-06-08", 3593.07], ["2026-06-09", 3574.94], ["2026-06-10", 3558.67], ["2026-06-11", 3500.13], ["2026-06-14", 3490.78], ["2026-06-15", 3489.7], ["2026-06-16", 3433.4], ["2026-06-17", 3458.8], ["2026-06-18", 3444.48], ["2026-06-21", 3445.19], ["2026-06-22", 3443.3], ["2026-06-23", 3428.94], ["2026-06-24", 3442.68], ["2026-06-25", 3445.79], ["2026-06-28", 3437.9], ["2026-06-29", 3443.25], ["2026-06-30", 3429.46], ["2026-07-01", 3387.24], ["2026-07-02", 3366.9], ["2026-07-05", 3344.92], ["2026-07-06", 3353.23], ["2026-07-07", 3338.15], ["2026-07-08", 3343.11], ["2026-07-09", 3294.18], ["2026-07-12", 3262.68], ["2026-07-13", 3235.96], ["2026-07-14", 3260.07], ["2026-07-15", 3231.45], ["2026-07-16", 3239.0], ["2026-07-19", 3268.77], ["2026-07-20", 3256.07], ["2026-07-21", 3227.45], ["2026-07-22", 3215.44], ["2026-07-23", 3212.65], ["2026-07-26", 3216.91], ["2026-07-27", 3204.34], ["2026-07-28", 3211.11], ["2026-07-29", 3200.66], ["2026-07-30", 3121.93], ["2026-08-02", 3133.53], ["2026-08-03", 3242.13], ["2026-08-04", 3207.46], ["2026-08-05", 3180.94], ["2026-08-06", 3158.61], ["2026-08-09", 3155.93], ["2026-08-10", 3139.44], ["2026-08-11", 3135.28], ["2026-08-12", 3146.16], ["2026-08-13", 3123.84], ["2026-08-16", 3130.05], ["2026-08-17", 3132.98], ["2026-08-18", 3106.02], ["2026-08-19", 3051.44], ["2026-08-20", 3074.6], ["2026-08-23", 3044.23], ["2026-08-24", 3063.7], ["2026-08-25", 3094.19], ["2026-08-26", 3127.86], ["2026-08-27", 3162.04], ["2026-08-30", 3201.45], ["2026-08-31", 3208.63], ["2026-09-01", 3169.44], ["2026-09-02", 3159.95], ["2026-09-03", 3152.18], ["2026-09-06", 3128.34], ["2026-09-07", 3126.29], ["2026-09-08", 3116.93], ["2026-09-09", 3109.51], ["2026-09-10", 3101.55], ["2026-09-13", 3091.66], ["2026-09-14", 3114.48], ["2026-09-15", 3122.37], ["2026-09-16", 3132.01], ["2026-09-17", 3166.69], ["2026-09-20", 3176.05], ["2026-09-21", 3203.46], ["2026-09-22", 3208.92], ["2026-09-23", 3287.05], ["2026-09-24", 3356.68], ["2026-09-27", 3303.0], ["2026-09-28", 3368.67], ["2026-09-29", 3333.42], ["2026-09-30", 3313.04], ["2026-10-01", 3318.53], ["2026-10-04", 3193.7], ["2026-10-05", 3207.85], ["2026-10-06", 3238.98], ["2026-10-07", 3246.74], ["2026-10-08", 3224.14], ["2026-10-11", 3202.75], ["2026-10-12", 3194.63], ["2026-10-13", 3188.67], ["2026-10-14", 3195.18], ["2026-10-15", 3175.59], ["2026-10-18", 3174.62], ["2026-10-19", 3158.82], ["2026-10-20", 3180.38], ["2026-10-21", 3196.79], ["2026-10-22", 3186.77], ["2026-10-26", 3055.65], ["2026-10-27", 3149.1], ["2026-10-28", 3149.63], ["2026-10-29", 3166.65], ["2026-10-30", 3174.6], ["2026-11-02", 3048.57], ["2026-11-03", 3226.25], ["2026-11-04", 3250.41], ["2026-11-05", 3227.39], ["2026-11-06", 3238.38], ["2026-11-09", 3120.04], ["2026-11-10", 3274.38], ["2026-11-11", 3307.36], ["2026-11-12", 3279.46], ["2026-11-13", 3314.86], ["2026-11-16", 3318.22], ["2026-11-17", 3317.22], ["2026-11-18", 3307.27], ["2026-11-19", 3356.92], ["2026-11-20", 3483.34]]}}, "noticias": {"ANT": [{"titulo": "El desplome de la IA lleva al Nasdaq a su peor semana en año y medio con Anthropic hundiéndose un 8,5%", "fuente": "EL PAÍS", "fecha": "2026-11-20 13:01", "enlace": "https://news.google.com/rss/articles/CBMijAFBVV95cUxPQy1NeU45bHp5cVBZTnhzWE5Qd294WkhCbzJySUM5ZVhZVG5acmFXVmY3U2tEczhnTUlaWlh0NDBOLTM1cmtWcU9JbTBqR2oxNEFVc1lwczY1M3B5OHc4M2ZxZHdkeDZtZko2ODJfUFpCbkhudDNxX1RqUU5mQ3JQbnFkN3NoRnBORVhCcNIBoAFBVV95cUxObmhmNHBQUE1Uc0N2TV9SMXBXdXFveHFIUUtzN2lnZUFOeUdndEh4dFUzSHpHRHZIVlg1Z2JiczVySnpWYnhSRXRVSHdoNWJfb0lmVGg3UTZINFlXcm9xUXBzdzBBUGUzY21pVGJnQnk3UVNCV2FGS1RYVUNKWmtlQjgxYXlxam1SN3pXSTVDaThTby15LTFYNEdIdUFIblU2?oc=5"}, {"titulo": "Anthropic: billones por una promesa", "fuente": "DW.com", "fecha": "2026-11-20 19:26", "enlace": "https://news.google.com/rss/articles/CBMie0FVX3lxTFBzZFhvVWJsaGJwbjgyeDFNTk1KSzItdjZCQ2F3M3QtNzh2R0NBQ1V6YXF2cm82Mzd3dnRydEJGT21QLV9Ld3ZCbUw2YTdvWXJKTTJiejJ0X0QtOHhRVmFlUFByaUhPOFhPeFh3b0dYTVBaWHpWejRTWEVJWQ?oc=5"}, {"titulo": "Anthropic cae en bolsa tras protagonizar la mayor salida de la historia", "fuente": "El Espectador", "fecha": "2026-11-20 19:30", "enlace": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxPR0NhQzdzSTBRb1lna2owQVd2LTlKdDZLQkUtOXNTZFdqYTBTaVVaSlk4MFVGRmFxV1lRWTk4Y0xFMzNuWW1yanJ1anMyRnp6MDA2WHlhUFpTNHRXazVXTzJmOTlBdVV0Sk5TN2l5RGNhMUZPQmRzVUtwMFBhTXJiNUNNZjlIWldiUXFYdjJfTVVhdDFPV1Z0OGU2YmlDekFkTVc1WjR5R1FTOG1zNVNWTGc1bFVPekhGdUQ5bkNxRnNmLWvSAcMBQVVfeXFMT0dDYUM3c0kwUW9ZZ2tqMEFXdi05SnQ2S0JFLTlzU2RXamEwU2lVWkpZODBVRkZhcVdZUVk5OGNMRTMzblltcmpydWpzMkZ6ejAwNlh5YVBaUzR0V2s1V08yZjk5QXVVdEpOUzdpeURjYTFGT0Jkc1VLcDBQYU1yYjVDTWY5SFpXYlFxWHYyX01VYXQxT1dWdDhlNmJpQ3pBZE1XNVo0eUdRUzhtczVTVkxnNWxVT3pIRnVEOW5DcUZzZi1r?oc=5"}, {"titulo": "Acción de Anthropic borra repunte de salida a bolsa y toca mínimos de US$87", "fuente": "LaRepublica.co", "fecha": "2026-11-20 15:55", "enlace": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxNcjItY1lZRnVLYlVQMmRGVDNXcHdUSmRNczZMMDdtTE5oSEFuSXlyTkpzUGpQMmFxNUFEZ2VDcTdjZEdMcjR1X05kRHRkX2kySmhFLVZTMnp1c3V2VloybHdDZkJhZVhZaVluWEdYNEJOdDJXd09TdmZrZWNRVlc1a05DTm1DT3ZvVVJKSm53M0gyR1RKQ1JnM3NZR1NRVzVLSVBmZXBBbmdwUmRXYkJhalFlVjlYclg2aG8zZFB4RVBSQdIBwgFBVV95cUxNSFBvX3lhVTRNNi1YempqV1ZPOXRyNW1lMTlBaWxpbHNUVTk2a0hiUVFvRUhSSjJDWGNZSW44N1lCbVAxX0RrVDNCMnU5Zjh5OE5JR2JJTm9FYnRxSlZVaHYtcHIxRFluS1NKMHl4a2RjYWJNaG5sWHp6ZFRDZmFtZG1lUzBXTHoySjhxWms2dGR1eEVUUGJSSFJlMzJIaGZrUlVubFZkdkI1VDB0WnVqeko4RzVOaERmYUFzVHk1dWpjZw?oc=5"}, {"titulo": "Matemático de Anthropic afirma que probó la hipótesis de Riemann con Claude", "fuente": "DiarioBitcoin", "fecha": "2026-11-20 15:59", "enlace": "https://news.google.com/rss/articles/CBMitgFBVV95cUxNaU5MMTFmd0xmanhibkVEQkpjRGh5N0xLVWxFTTFScll1UVFfbXZZZC1SclBCbFppQk1vN3VmYUh6M3ZuYmhGdXlBdUhOVVVfOFdxcWxUdDFxZE1KdlVNMXdfRmF6S3VFc3JBVFBmZmRQNk9vSHNyYzQ1RktEZXRLcWFBMmJkQV9uRTZ5Qnl6UTFjWmdTM3FmOTJ4SkRlSkNBZ0h0a19kaGRsYkVsNGYxVjNYRTVyUQ?oc=5"}, {"titulo": "Tras la salida a bolsa, los fundadores y empleados de Anthropic son más ricos que 57 países juntos", "fuente": "Le Grand Continent", "fecha": "2026-11-20 14:37", "enlace": "https://news.google.com/rss/articles/CBMizwFBVV95cUxNVGRtbXdWaXRERGk3LUV3dUF3ZERST3lramhHZUJmU2tfeDVqTTZaUC13d2tMamZnYk9rdmU3bDJkWWpiRkZRWDdkVlV5aHIzUUZjWlhKczl0aTVEcEIwam5aVk9jcjNnSnUtN2tsa2xCT3NHRVNJSFZBb25iRlFFbU0wUVV6RkR1ZGJZOWNxN1VMVjZLR1NBYkRMbTk2OTBPZ1dIVXBrQlkwRVc3ZDVDXzdTLVZKWkxleVdEWm1seXVaS2xFeUVVVGhwalA2c0k?oc=5"}], "NVDA": [{"titulo": "Amenazas de muerte, insultos y humillaciones: el lado oscuro del liderazgo de Jensen Huang en Nvidia", "fuente": "EL PAÍS", "fecha": "2026-11-20 17:21", "enlace": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxQbzNvN3E1cDRkOHFIVjBseUY3RUVuUnktRHlETGNPamN5YjIyOUhQVXA1NUgyUkgtb19SRkxVeDFVOS13dDZhTzFVd01PcHhFdktlTmxzMkowTVEyODRYVDZJazFXc1JEclh5cDB0ZV9tTjhYWWxLSW5KdURlMzFMQkZjM3NpSk9ya0xiM3E0SXhfS1pQUGtwd1ZlY1ExeWhtYjFURzJKU1JidmY3d05teFNabEJHQmNyZVUxT3hZX1hlZmZhWmpoY2JCX0oyU2NXc2fSAeYBQVVfeXFMTWFfQThCRzVCY1ptWHd4dTVLbmJPVHVYWFBzbmFIdWtGSzhNeDR2emVsWTFMRTNRTFdfSlpWdmN0VWEwaHRYaFVBbjh0d2l3LVd1bkZldUpYSm1UNmxUOEhBWlAwWmU5ZkcxckFheFdTaElyQXE2YU9IZHpLNVBkMVFIZTl6ZEtwLVBFS1ZQSU9NUEs1NnBWV0toY2xLNGw3U3BnbXpxOTNWaWp1aC1nVzVjX3hraUpGeXRPUzZOZjNyTUZBR1lBd0gwdTJpQlJ3b25zVVZ3QVZXUGRJMkxjNFpERXFkaUE?oc=5"}, {"titulo": "Nvidia se desploma en Wall Street: sus acciones cayeron 14% tras informe sobre investigación de la SEC", "fuente": "Bloomberg Línea", "fecha": "2026-11-20 21:23", "enlace": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxNRmNvZFExSzJNRzdTVlpIZGJnTGt2WTRId2VGaTlVbEdnYkdnQjhKbkJ5bXdQYmFHOHFxZVhiY245TVB3NWVQZ2tZTU9uYmFKN1NHMEZ3d0x5N21OaEMzYk5jZEd4WWFxYm5JWXhDNk01TVVUanI0ZU5PdnBzQ2ppZklRX2VwZ1dmWERXTDFKMDZhSjRpTVc2cHBpYXpEenJFTUR2bVhDRVozWXlNWlVzRTlaMDZSSVNSOHFVTUQtSVhjd21qUkgzMGU0QWNMaTFVSmdvcDRVSUVVSHFI0gHwAUFVX3lxTFBqS05UMGNpLW1IVFk3YkNMb3FTSmUwbmtkcUZNcG5hVnRWbWJrUTFlX3I2SGxXd1MxNERTZ2VRMEpmR1JpZ0hIdF92OXQxRzByMjVPRk5ZRXBHdGVTYlExM21wazF6YnJBQWdVeHB3bEZnT1dJVXA3VUhOXy1WM1lIMnY5ZkNsTHM5LU5xWlczWXE4cC13eUwzRjg0SzMwaTRUQXQ5OW5uOTdleXhGWFItWEdPZ3hyMkYzWmhsbHNYWnlERWxZNnNabWpvZ3BlbU5rRVlYUGlHZHlsY3NFVkJSX1pSZDNsUzVvay01U2NfeA?oc=5"}, {"titulo": "Trump pide a Nvidia una ‘segunda oportunidad’ para Jensen Huang", "fuente": "Portafolio.co", "fecha": "2026-11-20 20:44", "enlace": "https://news.google.com/rss/articles/CBMirAFBVV95cUxOSjBkNGg0MnR0VnduNldxOFlDR0pjZzY3cTN3Q0dFMU1CQXU4MFlST0FsYXFIdDViWlYxaVRUQnE5TFpIdzdBNGd3RHJudXhwemVFOTlCdWJSYjFNc3FFSFZSMDc0TmFQd2ZfZTViZmVwU3ExLUpXNFRkay0zY0tvRVlaSU9GbF9oQmF1OUIyMXlLbG9QekpFWVpRQmxwQW4xTE92X3AtaldnT2xZ0gGyAUFVX3lxTE5kbVBiTE1tX01US3A2bjJMUWJmRnRLUy15SzNnU2lwZmd5ZS1uckF5MXRZR2V5bUlidVZfMF9rWVExSFlCTzVaYlMyVDM5TlV3Zi15VjJVT0Nmb1JuOXZjeUNXRl93bHZycWJPOXNCSlJMOUVOd1oxM0dNdG1rdjduVEI0V1AzeGdZRElsVEY2TDFELWxyQzZuNjRGdnctV1JiM1NSa19lTHdZSk9vaGUxRUE?oc=5"}, {"titulo": "Trump pide a Nvidia una ‘segunda oportunidad’ para Jensen Huang: ‘Es una de las mentes más brillantes del mundo’", "fuente": "El Tiempo", "fecha": "2026-11-20 19:50", "enlace": "https://news.google.com/rss/articles/CBMi8gFBVV95cUxOcUE2bHAwR1dXbGphc0tWQ1lhaW9VNWR2WmE5SkRRbXFOSDlQQ190VkJVNzNZYjBMOHBmS1piWGwxbHY1T29TVXc3bWFURzBPQU9Xd3dFZkpveVJGdEdLbVliNFhqVTQzV0tZbXhHMFd5M2dfeE8zOHk2VnYzUTJjRktPaWdJZUdkWG5NemppMzAyZUZfc0NrLW9GVzVSNFRqQmFnWVJiYXRZRmhkMnhEY3llWXE2MllOUEk1QjNVV1M4cDJrV2JFVjhhMVdWY2Vfa05nc09ibkQ3VHhrNkVlWE5BSjVxNDh6eVJuTWp5am5Ud9IB9wFBVV95cUxPbVV6T1N2ak80MlhQMUtwc1d5dXlvdktJWXAzMWlBSFpja1FvbTd1LVNaeVNLbzRaMEo4UWNhWGhNcUdSYTRZOHdnbE5WWmtSTzlUMGpNaHo2MGxvVUpmLTlxaERKZnNoUHJld3N1Wmd4SWFzeFJMX1UxSG9mUUhjVXl6ZE1aZGRoTy15dWlTb2RnaVJzYmRySWJUNEh0N0N5eVJEdFNUa1BCcGNud2VYMVo2UjJMOU42Q0xXaXQ5UzBMOGxsbHlpOVFJbTVyUzJPU1hnTkR4NTlIemxQWjlZbHJUTEJNT3pxaUhIb2NNZ3luV1cxX3lz?oc=5"}, {"titulo": "La SEC examina la contabilidad de Nvidia en su investigación sobre el fabricante de chips", "fuente": "El Confidencial", "fecha": "2026-11-20 22:07", "enlace": "https://news.google.com/rss/articles/CBMingFBVV95cUxPSGNFNnNpeDROY0xpYjliM045YVM0OHFFRTd1UTNmQ0RnUDlDcXh4cllKTWRoVjJsWG9heXRLNGk1T0Y1Vzk3UzFEWXRRUlRnLUxnUm53QjJ2Y0RXaHg1cVVrdUxiTWZfR25DSXVob0Y5V2hYS2JNSnVDeUdXVzNIQld4TkUwZDZQcmtvX0pwaXd3c296QlZobEdyOWdnZw?oc=5"}, {"titulo": "Nvidia sufre su peor semana desde 2008 por investigación de la SEC", "fuente": "Investing.com México - Finanzas, Bolsa y Forex", "fecha": "2026-11-20 23:35", "enlace": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxOQnVUT29PaHRBamtEemNWTk1Fb3Y4YmhzSWRUWUgxM3VfQTZZb0pCUWVGVXN5N1VIWi1JdDVxb0FDMUxTREtNSEVMa2dQd09HLTVzQWhJQUc5RFpEbXlNQ1VJMU1VRTBacEQ2cXh3eHBZWE1VYUVzVTFYQlNIQ2t0VUhzd2d2VG5kWE1vN0ozWDBNXzFwMGlaZmJIYUJaakg4b0xRaUI5eW1ZQXBDRGdsbWQxZGtSVzNHdXVZ?oc=5"}], "GOOGL": [{"titulo": "Estas 3 acciones imprescindibles para inversores que se perdieron la IPO de Anthropic", "fuente": "TradingView", "fecha": "2026-11-20 17:12", "enlace": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE84YlJwcG5RMGh6cER5MndVR1lYdzEyOUxkYXRKSVJ0MlpyaDJNdlFROUw2ZUp1OU8tSGpsa0ZHNGxrZENBd0lwTGpVY0w3V2VIdVVaeDhFcm82NlA0Ti1ja2d5ZU9rdw?oc=5"}, {"titulo": "El lanzamiento de la primera emisión de bonos en Asia podría ampliar las opciones de liquidez de Alphabet en unos mercados tecnológicos volátiles", "fuente": "Traders Union", "fecha": "2026-11-20 22:35", "enlace": "https://news.google.com/rss/articles/CBMihgFBVV95cUxNMzJQQWxrV19wREFVUDh0OHotQjdvV1BkeEctNkQ1ZXl1ZFlxekFWMzlmdzltVDEwc1NpOG1yY29EckFDcHpxaEVDSW9xaFQzTmpzN3JfaFNiekZVMVZfRXRHcHJHa1ZyYk9OeFVCbHFSZnVxZnJWMzFadHB6cU13Tkpjakc4Zw?oc=5"}, {"titulo": "Anthropic en Wall Street: Amazon, Google, Nvidia, Ashton Kutcher y más inversionistas detrás de ese negocio", "fuente": "Infobae", "fecha": "2026-11-20 11:30", "enlace": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxQMFF5dE1GX3hqOEVxc05JZTUxTll3VGFvaGVjUTFDWU1fSE55OXhKMTh3QUN5b29xZzh3VEtzQm1GeFlXc2hzdzRDTGYwY3F5b1BZSnFKbXpxOTgxQ1A5eFNXQjBxaGl1Ti1vTXNWRlZhS09TQUZoY0x3VlBRMU1tVVZwUEZGeUVMU09ScjdDaGhaNzMwZ1hqbEtSUmVJOGJzYzF2YktiUVhGZktZVFNUTW1CdFZjOUpJRmZPajZMWGtrSDNVZmtiMzdBWFVGR0dfdzdQa19uWV8wdU9pNkHSAfgBQVVfeXFMTkx3Qzc3dHBLaHphRTFTNlVNaGxmQ0V0bmV5WFUxNjZlcVM1UWZ2cjRNMTkzUUtZdnhDTi0tVjZhNWVMam5wZHpGSXFsVnVKYkpJOXI0VE9WMDhjLW5Sb1JYbzdOWHY5MXNyRWZfaFBQWExPdkJXMVE5QUlpdV9qUkk3QkxRSmVSNkJpQVlkU0ZfOUt4dG8zZEdJTGVYR1VlWVYyUklNbVJNYXNDUlo5QjRqdk80cElYLTc0TjhMU2s2blZiTVFMX044Q3BHVC1oNjZ6LURCUXFJaGVBNE5KZWh2Q3FHZFF5ZUpONk9yMEIzaHg2RWRnNkE?oc=5"}, {"titulo": "Alphabet se endeuda hasta 2066: coloca 6.000 millones en bonos al 6%", "fuente": "Negocios.com", "fecha": "2026-11-20 13:02", "enlace": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQNVJPZmVEaDdxVV9zb1pIeVBZYU56MVVxVUJsRnlUbndqcW91dFZqUkZxSEF5SkIxTmxGLTV6SUoyS3dnM3F5ajFFa01jZ3NfOVNUSUJ6TFJ1ZVpiYWY4MzVuSGRTU1pNNjF5LUw5S3dkSnpabWc0bVNJZTFjTU5qMkZZMnJzZUxfSy13TE1HYmFCcVppV2JobFF4d1J5bWhidHYwbm9XZ2tRS0FyZEQxWVNodk_SAbQBQVVfeXFMUDVST2ZlRGg3cVVfc29aSHlQWWFOejFVcVVCbEZ5VG53anFvdXRWalJGcUhBeUpCMU5sRi01eklKMkt3ZzNxeWoxRWtNY2dzXzlTVElCekxSdWVaYmFmODM1bkhkU1NaTTYxeS1MOUt3ZEp6Wm1nNG1TSWUxY01OajJGWTJyc2VMX0std0xNR2JhQnFaaVdiaGxReHdSeW1oYnR2MG5vV2drUUtBcmREMVlTaHZP?oc=5"}, {"titulo": "Nestlé estudia aliarse con Google y Microsoft para impulsar líneas de producción autónomas", "fuente": "MarketScreener España", "fecha": "2026-11-20 18:04", "enlace": "https://news.google.com/rss/articles/CBMi3wFBVV95cUxNMEh5RTEtbUl3NktiV012bjZPZEQ1SUxFcWRnY2NFM0JlS2pETlRUdWZXX0xfMEp3cXI5WG9aVVVfN2lfY3ZYRXlKaUdBMlBfNUJyRkdrajhQU2hkUVlRWHl2RVlERWdCZ29raDljZVJMbXViVnlVWmIxQ2drbEdJeHREZkJHa3V0Z3UyNUZwUTI5UHJjYXBlbERkdHlkZjF4SVBGWFQ1TlVYbTFXTjlqYnhnX0xYY3p6SG5aNDVoMWluUGZrU09CSTNFUnpNYXFXaUNMTkhFOVhhVjhXQWow?oc=5"}, {"titulo": "Google y Amazon poseerán más acciones de Anthropic que todos sus cofundadores juntos", "fuente": "Forbes España", "fecha": "2026-11-20 07:11", "enlace": "https://news.google.com/rss/articles/CBMijgFBVV95cUxNcG5WcXRoeWsyWWZQeFdjaWdYRUZ1VHdwNXdjQmVnWXFrdS1Ib3FpUzZOdWNLZmpTSnRiYnVzdkkzNGt6dWpjc245akFTR3VKeThJNE96ZFB1QTY2T2lZXzNjbFRpamNvaUJNTFhPNWk5bjVKc1NaZ0JGYlJ5QzF4Nkl2Q21ma05LWE1RTVhR?oc=5"}], "META": [{"titulo": "¿Por qué cae hoy la acción de Meta Platforms Inc?", "fuente": "Investing.com España", "fecha": "2026-11-20 18:23", "enlace": "https://news.google.com/rss/articles/CBMirAFBVV95cUxQcXN3YmlreEdwNzVwX09ydjRnYnRHZWtTc0dDSEdmNGQ1VklhQ3NtWVZuZ1JxTld6VjNHU0hFcHVtakIwX0txZnNFbmpDRER6R0x4ei1EMkZJUWNrWWFiX01OSHlJYnJ4WU9fUjBaclRfVlFzeVhvOUxWZURaaFhOSGNXek9NMDZYTmJocDJaY1ptWVNSVHNhY1BsOEl0cXNGVlJFeThDUlM5UW1N?oc=5"}, {"titulo": "Datos clave: Avances de Meta en publicidad con IA y gasto para 2027; Muse a $300 y fallas en pruebas del agente", "fuente": "TradingView", "fecha": "2026-11-20 08:00", "enlace": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9aTEJtaFloZktaWExrMGRVUmc1ZDZ3RF9DamZ6aTFnYU9XMHlYc0tNazRjcTVwNUV2ZHo0d21OUDNXQ21JUFZTTm5UNE9tWEU2am52dlhuNHFXQUhkSnJySXhyNU90dThuUEs3TQ?oc=5"}, {"titulo": "Análisis técnico de las acciones de Meta Platforms: movimiento bajista mientras los vendedores mantienen el control", "fuente": "Traders Union", "fecha": "2026-11-19 19:12", "enlace": "https://news.google.com/rss/articles/CBMilwFBVV95cUxPWWswcXplM1dpOHdMMktLamVKbHNsaTFkZDY5U1g4d2ZUVFVINkt4S0lPVzFscEd1cmRWUDhCUVg1TlYwQ2NDSm96RlJrdjdYbTBxdW9RTWlhQW5IcVA1eGMyVHI4ZVhSTmtDU25QQVF1eFI4aEpFUTFmYVp0OXFCcF9TdWs2MFl6di1CRkJGTjBfY2Flb0pF?oc=5"}, {"titulo": "Precio de Meta Platforms hoy | Precio de METAON 2026", "fuente": "KuCoin", "fecha": "2026-11-20 13:08", "enlace": "https://news.google.com/rss/articles/CBMiT0FVX3lxTE9LQ2xhdDRJTUxkcDR4dzhKWGx4c2lJamFINmZ2djhoa3g0bDVHY0Q2d1pYOXZuYWZPUlpUbEJBUUcwSkgxVDhQNVpYaWt1V2s?oc=5"}, {"titulo": "Meta Platforms reconsidera su objetivo de cero emisiones netas para 2030 ante la presión del despliegue de la IA sobre la energía limpia", "fuente": "MarketScreener España", "fecha": "2026-11-20 00:44", "enlace": "https://news.google.com/rss/articles/CBMi7AFBVV95cUxOdGNKeTdsbWZJd2V6ejQ3SDNJS0RRdTliRVRXS2NvMDQ2WU9UOTktVnQtcVlyekpIeTNzMFlKOFBMWWN3TUh6VXE0eUFod0lNeTB1Yk5NMEhOZTBka1hCUEFGYW5FS3lQN0FQX3BiMXJvSWo5SVoxVklxZ25RMVNReFIxT25XZllnb3kyeVVieG5ielRwanBLc1NOVGV1R0RpWXB1U2VoOGItUGt1Y1k3NWxDZU0wTHNvdDdFcUx5b0VLMGQxOWtzcU5fbTltMi0zRWk2MVpYcGM5NjluSmxBSy1DYkJYUkszWHpSNA?oc=5"}, {"titulo": "¿Qué está pasando con Horizon Worlds? Por qué Meta lo cerró y luego ha dado marcha atrás", "fuente": "Blogthinkbig.com", "fecha": "2026-11-19 08:34", "enlace": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE5Ldmdha0doa1NXT2JOb0R6RTdEV0U5bmZGV05YM0E2YUtWcUlraHlLQmRDNXAxV3RadmJPMmp3VHhPWl91R1VOcHQ2d2JGVWE0VjBOc3ZZRWpGM0Vrb1E1cA?oc=5"}], "VOO": [{"titulo": "Wall Street se hunde por la caída de las acciones tecnológicas; el S&P 500 entra en corrección", "fuente": "Univision", "fecha": "2026-11-20 20:56", "enlace": "https://news.google.com/rss/articles/CBMixgFBVV95cUxNSDM1Y2tJVXF1dXpLMUpwa2NyWGFyZjRCbFdvSjZuWHhkWExHTjdFTkRXYTh6RjJzSGlFUi1NRk5rSmdFWFVUUWwwZndqWDl1MllOTk1EMmpNLU5KT09ZOE9tejBhdFMtZnB2UXhWNHhuWHNZakdXVm9aX0ZUN2tzWGJzU1lKcWdjYU94RE1iVEhyQ2V2cXFjTzA2OVBaMzBWR2Rha1ppY0cxcDdjem1mZ0NxNnZiN0psOERtSmpwZGhzd0FDRXc?oc=5"}, {"titulo": "Los mercados se desploman: el Nasdaq y el Dow Jones borran sus ganancias del 2026 y el S&P entra en territorio de corrección", "fuente": "Telemundo", "fecha": "2026-11-20 21:44", "enlace": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxQb2poNlJ2c0ZnRkJzZWRvbEVBMDI2eXVXb0c2NHdGbnNRY05WMjRGRm5nRWdHb2dEa3JZMHA3aXRUMXlhUEQteHVsR2w5YmdRSVVRc2MwaDkzS21tZm5KUXFSWHNRODJydGtpMHBuZlU4UHhsWmZTeUwwQmUyVXA2bFFCeVJ1TkpCNmdBQ0hydG5fa2w0QVZ0bEg4cVVtTnBnMGRkQTdUNEN0ejdpb0laQS14dkVMc3BSZV9oRUw1LUV1T2J3NlltbXRQUU5tMFBQMlhseWRYVjNjbmVG?oc=5"}, {"titulo": "Acciones de EE.UU. caen mientras la salida a bolsa de Anthropic no logra reanimar el entusiasmo por la IA", "fuente": "Bloomberg Línea", "fecha": "2026-11-20 16:53", "enlace": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxONkktaWgyOWZwaGtVZWhMbUl2WW1uTWVycGsyV0VVbk9JWXVLM3pDQUZmekxhejRCZk1OLTA1eEpEOVd0UW9Ua2JLWVpOTXcxZ1E1dlpTbGVPZ0V4V1lvME51RHdWdFIzYW5lWVkzZTR6cVVITjdCV2R2SmR2VTRHd2syNzU5LUVvdGlGamJQZ0hhMmlrZ3ExQUw2MVNQZVZfcnJFRGJzUFMyWDQtSUs4cERFQ0Y4VzhBYXN2OF9fNm5zdHRvRTNuVXNMQ0xSMkFrRnBwWG9FQVpiYlE50gHwAUFVX3lxTE9DTjZCUlhreUltZDFhdS05VHFkXzJWbi1uZ0Mzdks0dElibXBLWDd4c2FmWE9hNFY0cHRON3B1cFZyMDNTTEhTSDg4V2VQd2JHaDVkVkd3UkVTOEU2d2s2d29YWEcwcEVuY1B0M0dUT0pKMmxCN2VUTkQ2MWFMY3pWajY4UFpFMlZiSlA2YUxxRDdHYUNZZVFhZ2ZMV3ljejN4UjMzci1YUWdmUXFMUnJid2xYZnh3S2diX2FHdks2SDg2a1d2VUdvY1lJR3MtNzhidzhPbl9HQ25kX3FNU0tLMHdzM0gxeEpMd2JQUWUxcw?oc=5"}, {"titulo": "El S&P 500 y el Dow Jones entran en fase de corrección; Anthropic se desploma tras su salida a bolsa de récord", "fuente": "MarketScreener España", "fecha": "2026-11-20 19:09", "enlace": "https://news.google.com/rss/articles/CBMi6wFBVV95cUxOeGd5MjBTMWZLMXVKVnZDRzktdUswZEtmaE0zT2lpX3pVZGZnTmpWaDVINnNTUHQ4amhNUzBwZmpMWnR5TlVxRkRKa2ZtbVVXY3FUSmx1RjhDSk5hYTBnLWdOWmY0ZHVNdGV1cnlvMXcwajJkV2FDM1JfU1NmV3cwM2hLZE9rYS1aaVI1Q0dmNzktR29jaFRJcWxKa3ZYaFJOOUVmNFNBWnZBZ2tMYzVubnFTR2FRczVCZlBQUmY1amY2ZlN5ZnpnUDF1UnNuVFM2dWhaVkI2bldDVEpUYWRPU0VVQ0FfbGRrNGpZ?oc=5"}, {"titulo": "El S&P 500 cae 3,7% y el Nasdaq cae en terreno negativo para el año", "fuente": "Independent en Español", "fecha": "2026-11-20 22:15", "enlace": "https://news.google.com/rss/articles/CBMizgFBVV95cUxOOXFkcXVEQXlsd0JVeHdnRGF5RE85OUgwYWVHTUs4NzBXci1SdmNUcXFjSC1oUE5YRFdqVWdBRUEtQWl0cmNDX1hfSDZOVzh2QTZ2djd6SUpEVXQ0aEhTQTVpZ1lmSnZXZ2FuTXVxMk1QWm9rTGZ2THVyOEs5UGdUR1gwaTd2MURPbnd1dGxNX2lLNGtpX3Q0ZU90b0JrLXVkekJRTnVOTjB4ZmNyZ2RUaUl3OUhSMDRJcElXZTNzT3pyLUMtOUFHeC16RlRKZw?oc=5"}, {"titulo": "La bolsa de Wall Street cae con fuerza en medio del desplome de las acciones de las tecnológicas y registra su peor semana desde la pandemia", "fuente": "Yahoo Finanzas", "fecha": "2026-11-20 23:15", "enlace": "https://news.google.com/rss/articles/CBMijgFBVV95cUxNR0Z4ZHdseTFVM2dWX3RZZEdJaUVjX20zaFM3ZDU3YzZQVmZJRUlvMnM4Y3dTVE11Q0hCd3B2bElzck9MYlZFSGxQV2dJbjJxMk44eE1Sd3ZQYVY3TkpCQWlnZ1lRVjBSWjVTZmJwUFM0bzBwQTBMM0g2ZmhobWpNOERLV203Nk1HTXVqS0t3?oc=5"}]}}</script>
+<script id="nota" type="application/json">{
+  "fecha": "Viernes 20 de noviembre de 2026",
+  "titulo": "Día muy rojo en Wall Street",
+  "puntos": [
+    "Nvidia cayó cerca de 14 % tras un informe sobre una investigación de la SEC (el regulador de la bolsa en EE. UU.), en plena salida de Jensen Huang como CEO. Trump pidió darle una “segunda oportunidad”.",
+    "Anthropic (ANT) bajó 8,5 % en su segundo día, a unos 89 USD. Sigue por encima del precio de salida (83 USD), pero lejos de los 111 con que abrió.",
+    "El S&P 500 entró en “corrección”: ya cae más de 10 % desde su máximo. El Nasdaq tuvo su peor semana en año y medio."
+  ],
+  "para_ti": "Aún no has comprado, así que esto no te hace perder nada. Las caídas son buen momento para empezar, pero nadie sabe si ya tocó fondo: compra en partes (una ahora, otra en unas semanas) y no metas todo el mismo día.",
+  "fecha_iso": "2026-11-20"
+}</script>
+<script>
+const D=JSON.parse(document.getElementById("datos").textContent);
+const N=JSON.parse(document.getElementById("nota").textContent);
+const $=id=>document.getElementById(id);
+const el=(t,a={},txt)=>{const e=document.createElement(t);for(const k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;return e};
+const NS="http://www.w3.org/2000/svg";
+const sv=(t,a={})=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e};
+const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const cop=v=>"$ "+Math.round(v).toLocaleString("es-CO");
+const usd=v=>v.toLocaleString("es-CO",{minimumFractionDigits:2,maximumFractionDigits:2});
+const pctf=v=>(v>0?"+":"")+v.toLocaleString("es-CO",{maximumFractionDigits:1})+" %";
+const TRM=D.precios["COP=X"].precio;
+
+$("gen").textContent=new Date(D.generado).toLocaleString("es-CO",{timeZone:"America/Bogota",dateStyle:"long",timeStyle:"short"});
+
+/* Nota: solo se muestra si es de los últimos 2 días */
+if(N.fecha_iso&&(new Date(D.generado)-new Date(N.fecha_iso+"T23:59:00-05:00"))<2*864e5){
+  $("notaBox").hidden=false;
+  $("notaFecha").textContent=N.fecha;$("notaTitulo").textContent=N.titulo;$("notaParaTi").textContent=N.para_ti;
+  N.puntos.forEach(p=>$("notaPuntos").appendChild(el("li",{},p)));
+}
+/* Movimientos del día, de mayor a menor */
+Object.entries(D.precios).filter(([s])=>s!=="COP=X").sort((a,b)=>Math.abs(b[1].cambio_dia)-Math.abs(a[1].cambio_dia)).forEach(([s,p])=>{
+  const m=el("span",{class:"mv"});m.append(el("span",{},s),el("span",{class:"chg "+(p.cambio_dia>=0?"up":"dn")},pctf(p.cambio_dia)));$("movers").append(m)});
+
+/* Mercado */
+const INFO={
+  VOO:{n:"500 empresas grandes de EE. UU.",c:"--c2"},
+  ANT:{n:"Anthropic",c:"--c3"},
+  NVDA:{n:"Nvidia",c:"--c4"},
+  GOOGL:{n:"Alphabet (Google)",c:"--c5"},
+  META:{n:"Meta Platforms",c:"--c6"},
+  "COP=X":{n:"Dólar en pesos",c:"--c1",label:"USD/COP"}
+};
+function sparkPath(serie,w,h,pad=2){
+  const ys=serie.map(p=>p[1]),mn=Math.min(...ys),mx=Math.max(...ys),r=mx-mn||1;
+  return serie.map((p,i)=>[pad+(w-2*pad)*(serie.length===1?.5:i/(serie.length-1)),pad+(h-2*pad)*(1-(p[1]-mn)/r)]);
+}
+let current=store.get("sel")||"ANT";
+function buildCards(){
+  const box=$("cards");box.innerHTML="";
+  Object.keys(INFO).forEach(s=>{
+    const p=D.precios[s];if(!p)return;
+    const serie=p.serie, first=serie[0][1], last=p.precio, per=(last-first)/first*100;
+    const b=el("button",{class:"card",type:"button","aria-pressed":String(s===current)});
+    const r1=el("div",{class:"row"});const left=el("div",{style:"min-width:0"});
+    left.append(el("div",{class:"sym"},INFO[s].label||s),el("div",{class:"nm"},INFO[s].n));
+    const ch=el("span",{class:"chg "+(p.cambio_dia>=0?"up":"dn")},pctf(p.cambio_dia));
+    r1.append(left,ch);
+    const r2=el("div",{class:"row"});
+    r2.append(el("span",{class:"px"},s==="COP=X"?cop(last):usd(last)),el("span",{class:"small muted num"},(s==="ANT"?"desde salida ":"6 meses ")+pctf(per)));
+    const svg=sv("svg",{class:"spark",viewBox:"0 0 200 46",preserveAspectRatio:"none","aria-hidden":"true"});
+    const pts=sparkPath(serie,200,46);
+    const col=per>=0?"var(--up)":"var(--down)";
+    svg.append(sv("path",{d:"M"+pts.map(q=>q.join(",")).join("L")+`L${pts.at(-1)[0]},46L${pts[0][0]},46Z`,fill:col,opacity:".12"}));
+    svg.append(sv("polyline",{points:pts.map(q=>q.join(",")).join(" "),fill:"none",stroke:col,"stroke-width":"1.6","vector-effect":"non-scaling-stroke"}));
+    b.append(r1,r2,svg);
+    if(p.min52&&p.max52&&p.max52>p.min52){
+      const pos=Math.min(100,Math.max(0,(last-p.min52)/(p.max52-p.min52)*100));
+      const rg=el("div",{class:"range"});rg.append(el("span",{},"Rango del último año"));
+      const tr=el("div",{class:"track"});tr.append(el("span",{class:"pin",style:`left:${pos}%`}));
+      const ends=el("div",{class:"ends num"});ends.append(el("span",{},usd(p.min52)),el("span",{},usd(p.max52)));
+      rg.append(tr,ends);b.append(rg);
+    }
+    b.addEventListener("click",()=>{current=s;store.set("sel",s);buildCards();drawBig()});
+    box.append(b);
+  });
+}
+function linksFor(s){
+  if(s==="COP=X")return[["Yahoo Finance","https://finance.yahoo.com/quote/COP=X"],["Banco de la República (TRM)","https://www.banrep.gov.co/es/estadisticas/trm"]];
+  const ex=s==="VOO"?"AMEX":"NASDAQ";
+  const out=[["Yahoo Finance",`https://finance.yahoo.com/quote/${s}`],["TradingView",`https://www.tradingview.com/symbols/${ex}-${s}/`],["Google Finance",`https://www.google.com/finance/quote/${s}:${s==="VOO"?"NYSEARCA":"NASDAQ"}`],["Qué dicen los analistas",`https://finance.yahoo.com/quote/${s}/analysis`]];
+  if(s!=="VOO")out.push(["Documentos ante la SEC",`https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&company=&CIK=${s}&type=&dateb=&owner=include&count=40`]);
+  return out;
+}
+function drawBig(){
+  const s=current,p=D.precios[s],serie=p.serie;
+  $("dTitle").textContent=(INFO[s].label||s)+" · "+INFO[s].n;
+  $("dSub").textContent=(s==="ANT"?"Desde que salió a bolsa":"Últimos 6 meses")+" · cierre diario";
+  const L=$("dLinks");L.innerHTML="";linksFor(s).forEach(([t,u])=>L.append(el("a",{class:"pill",href:u,target:"_blank",rel:"noopener"},t+" ↗")));
+  const svg=$("big"),W=Math.max(300,$("chartbox").clientWidth),H=W<500?200:260,m={l:52,r:12,t:12,b:26};
+  svg.setAttribute("viewBox",`0 0 ${W} ${H}`);svg.innerHTML="";
+  const ys=serie.map(q=>q[1]);let mn=Math.min(...ys),mx=Math.max(...ys);const padv=(mx-mn||mx*.05)*.08;mn-=padv;mx+=padv;
+  const x=i=>m.l+(W-m.l-m.r)*(serie.length===1?.5:i/(serie.length-1)), y=v=>m.t+(H-m.t-m.b)*(1-(v-mn)/(mx-mn));
+  const fmt=v=>s==="COP=X"?Math.round(v).toLocaleString("es-CO"):v.toLocaleString("es-CO",{maximumFractionDigits:v<100?1:0});
+  for(let k=0;k<=4;k++){const v=mn+(mx-mn)*k/4,yy=y(v);
+    svg.append(sv("line",{x1:m.l,x2:W-m.r,y1:yy,y2:yy,stroke:"var(--line)","stroke-width":"1"}));
+    const t=sv("text",{x:m.l-6,y:yy+4,"text-anchor":"end","font-size":"11",fill:"var(--muted)","font-family":"JetBrains Mono, monospace"});t.textContent=fmt(v);svg.append(t);}
+  const idx=[0,Math.floor((serie.length-1)/2),serie.length-1].filter((v,i,a)=>a.indexOf(v)===i);
+  idx.forEach(i=>{const t=sv("text",{x:x(i),y:H-6,"text-anchor":i===0?"start":i===serie.length-1?"end":"middle","font-size":"11",fill:"var(--muted)"});t.textContent=new Date(serie[i][0]+"T12:00").toLocaleDateString("es-CO",{day:"numeric",month:"short"});svg.append(t)});
+  const col=serie.at(-1)[1]>=serie[0][1]?"var(--up)":"var(--down)";
+  const pts=serie.map((q,i)=>[x(i),y(q[1])]);
+  if(pts.length>1)svg.append(sv("path",{d:"M"+pts.map(q=>q.join(",")).join("L")+`L${pts.at(-1)[0]},${H-m.b}L${pts[0][0]},${H-m.b}Z`,fill:col,opacity:".1"}));
+  svg.append(sv("polyline",{points:pts.map(q=>q.join(",")).join(" "),fill:"none",stroke:col,"stroke-width":"2"}));
+  if(s==="ANT"){const yy=y(83);if(yy>m.t&&yy<H-m.b){svg.append(sv("line",{x1:m.l,x2:W-m.r,y1:yy,y2:yy,stroke:"var(--muted)","stroke-dasharray":"4 4"}));const t=sv("text",{x:W-m.r,y:yy-5,"text-anchor":"end","font-size":"11",fill:"var(--muted)"});t.textContent="Precio de salida 83";svg.append(t)}}
+  pts.forEach((q,i)=>{if(i===pts.length-1)svg.append(sv("circle",{cx:q[0],cy:q[1],r:4,fill:col}))});
+  const cur=sv("circle",{r:4,fill:"var(--fg)",opacity:"0"});svg.append(cur);
+  const tip=$("tip");
+  svg.onpointermove=e=>{const r=svg.getBoundingClientRect(),px=(e.clientX-r.left)*W/r.width;
+    let i=Math.round((px-m.l)/((W-m.l-m.r)||1)*(serie.length-1));i=Math.max(0,Math.min(serie.length-1,i));
+    cur.setAttribute("cx",pts[i][0]);cur.setAttribute("cy",pts[i][1]);cur.setAttribute("opacity","1");
+    tip.hidden=false;tip.textContent=new Date(serie[i][0]+"T12:00").toLocaleDateString("es-CO",{day:"numeric",month:"short",year:"numeric"})+" · "+fmt(serie[i][1])+(s==="COP=X"?" pesos":" USD");
+    tip.style.left=Math.min(r.width-70,Math.max(70,pts[i][0]*r.width/W))+"px";tip.style.top=(pts[i][1]*r.height/H)+"px"};
+  svg.onpointerleave=()=>{tip.hidden=true;cur.setAttribute("opacity","0")};
+}
+
+/* Plan */
+const PLAN=[
+  {id:"pesos",n:"Cajita Nu o CDT Lulo",d:"Nu ≈ 9 % al año y la sacas cuando quieras; CDT Lulo ≈ 13 % pero quieta 1 año.",r:"low",p:30,sym:null,c:"--c1"},
+  {id:"voo",n:"VOO",d:"Las 500 empresas grandes de EE. UU. La base de largo plazo.",r:"mid",p:25,sym:"VOO",c:"--c2"},
+  {id:"ant",n:"ANT · Anthropic",d:"Recién salida a bolsa; comprar en dos partes.",r:"high",p:15,sym:"ANT",c:"--c3"},
+  {id:"nvda",n:"NVDA · Nvidia",d:"Chips para IA. Investigación de la SEC y CEO interina: comprar en dos partes.",r:"high",p:10,sym:"NVDA",c:"--c4"},
+  {id:"googl",n:"GOOGL · Google",d:"Buscador, YouTube, Android y nube.",r:"high",p:10,sym:"GOOGL",c:"--c5"},
+  {id:"meta",n:"META · Meta",d:"Facebook, Instagram y WhatsApp.",r:"high",p:10,sym:"META",c:"--c6"}
+];
+const RISK={low:"Bajo",mid:"Medio",high:"Alto"};
+let pct=store.get("pct")||Object.fromEntries(PLAN.map(x=>[x.id,x.p]));
+const savedM=store.get("money-v3");
+$("total").value=savedM?.total??1000000;$("trm").value=savedM?.trm??Math.round(TRM);
+function buildRows(){
+  const tb=$("rows");tb.innerHTML="";
+  PLAN.forEach(x=>{
+    const tr=el("tr");
+    const td1=el("td");const nm=el("div",{class:"nm2"});nm.append(el("span",{class:"dot",style:`background:var(${x.c})`}));
+    const tx=el("div");tx.append(el("strong",{},x.n),el("small",{},x.d));nm.append(tx);td1.append(nm);
+    const td2=el("td");td2.append(el("span",{class:"chip "+x.r},RISK[x.r]));
+    const td3=el("td",{class:"r"});const inp=el("input",{type:"number",id:"p-"+x.id,min:"0",max:"100",step:"5","aria-label":"Porcentaje "+x.n});inp.value=pct[x.id]??x.p;
+    inp.addEventListener("input",e=>{pct[x.id]=Math.max(0,+e.target.value||0);store.set("pct",pct);calc()});td3.append(inp);
+    tr.append(td1,td2,td3,el("td",{class:"r num",id:"c-"+x.id}),el("td",{class:"r num",id:"u-"+x.id}),el("td",{class:"r num",id:"a-"+x.id}));
+    tb.append(tr);
+  });
+}
+let lastTotal=0;
+function calc(){
+  const total=Math.max(0,+$("total").value||0),trm=Math.max(1,+$("trm").value||1);
+  store.set("money-v3",{total,trm});lastTotal=total;
+  let sum=0,hapi=0,pesos=0;const parts=[];
+  PLAN.forEach(x=>{const p=pct[x.id]??0;sum+=p;const v=total*p/100;
+    $("c-"+x.id).textContent=cop(v);
+    if(x.sym){hapi+=v;const u=v/trm;$("u-"+x.id).textContent=usd(u);$("a-"+x.id).textContent=(u/D.precios[x.sym].precio).toLocaleString("es-CO",{maximumFractionDigits:3})}
+    else{pesos+=v;$("u-"+x.id).textContent="—";$("a-"+x.id).textContent="—"}
+    parts.push({p,c:x.c,n:x.n});});
+  $("tHapi").textContent=`${cop(hapi)} (≈ ${usd(hapi/trm)} USD)`;$("tPesos").textContent=cop(pesos);
+  const s=$("sum");s.textContent=sum===100?"Suma 100 %":`Suma ${sum} %: ajusta a 100 %`;s.className=sum===100?"muted":"bad";
+  drawDonut(parts,sum);drawProj();
+}
+function drawDonut(parts,sum){
+  const svg=$("donut");svg.innerHTML="";const R=80,cx=100,cy=100,C=2*Math.PI*R;let off=0;
+  svg.append(sv("circle",{cx,cy,r:R,fill:"none",stroke:"var(--sunk)","stroke-width":"26"}));
+  const tot=Math.max(sum,1);
+  parts.forEach(q=>{if(!q.p)return;const len=C*q.p/tot;
+    const c=sv("circle",{cx,cy,r:R,fill:"none",stroke:`var(${q.c})`,"stroke-width":"26","stroke-dasharray":`${Math.max(0,len-2)} ${C}`,"stroke-dashoffset":String(-off),transform:`rotate(-90 ${cx} ${cy})`});
+    const t=sv("title");t.textContent=`${q.n}: ${q.p} %`;c.append(t);svg.append(c);off+=len;});
+  const a=sv("text",{x:cx,y:cy-2,"text-anchor":"middle","font-size":"13",fill:"var(--muted)"});a.textContent="Acciones";svg.append(a);
+  const st=parts.slice(1).reduce((s,q)=>s+q.p,0);
+  const b=sv("text",{x:cx,y:cy+20,"text-anchor":"middle","font-size":"22","font-weight":"700",fill:"var(--fg)","font-family":"JetBrains Mono, monospace"});b.textContent=st+" %";svg.append(b);
+  $("donutNote").textContent=`${parts[0].p} % seguro en pesos`;
+}
+
+/* Proyección */
+const SC=[{r:0,c:"var(--muted)",n:"Solo guardado"},{r:.03,c:"var(--c2)",n:"Malo (3 %)"},{r:.07,c:"var(--accent)",n:"Normal (7 %)"},{r:.10,c:"var(--c6)",n:"Bueno (10 %)"}];
+const short=v=>v>=1e9?(v/1e9).toLocaleString("es-CO",{maximumFractionDigits:1})+" mil M":v>=1e6?(v/1e6).toLocaleString("es-CO",{maximumFractionDigits:1})+" M":Math.round(v/1e3)+" mil";
+function grow(P,M,r,years){const out=[P];let v=P;const mr=Math.pow(1+r,1/12)-1;for(let mth=1;mth<=years*12;mth++){v=v*(1+mr)+M;if(mth%12===0)out.push(v)}return out}
+function drawProj(){
+  const M=+$("mensual").value,Y=+$("anios").value,P=lastTotal;
+  $("mensualV").textContent=cop(M);$("aniosV").textContent=Y;
+  const series=SC.map(s=>grow(P,M,s.r,Y));
+  const svg=$("projChart"),W=Math.max(300,svg.parentNode.clientWidth),H=W<500?200:240,m={l:58,r:12,t:12,b:26};
+  svg.setAttribute("viewBox",`0 0 ${W} ${H}`);svg.innerHTML="";
+  const mx=Math.max(...series.flat())*1.05||1;
+  const x=i=>m.l+(W-m.l-m.r)*i/Y,y=v=>m.t+(H-m.t-m.b)*(1-v/mx);
+  for(let k=0;k<=4;k++){const v=mx*k/4,yy=y(v);svg.append(sv("line",{x1:m.l,x2:W-m.r,y1:yy,y2:yy,stroke:"var(--line)"}));
+    const t=sv("text",{x:m.l-6,y:yy+4,"text-anchor":"end","font-size":"11",fill:"var(--muted)","font-family":"JetBrains Mono, monospace"});t.textContent=short(v);svg.append(t)}
+  [0,Math.round(Y/2),Y].filter((v,i,a)=>a.indexOf(v)===i).forEach(i=>{const t=sv("text",{x:x(i),y:H-6,"text-anchor":i===0?"start":i===Y?"end":"middle","font-size":"11",fill:"var(--muted)"});t.textContent=i===0?"hoy":`año ${i}`;svg.append(t)});
+  series.forEach((s,k)=>{svg.append(sv("polyline",{points:s.map((v,i)=>`${x(i)},${y(v)}`).join(" "),fill:"none",stroke:SC[k].c,"stroke-width":k===2?"2.5":"1.8","stroke-dasharray":k===0?"4 4":"none"}));
+    svg.append(sv("circle",{cx:x(Y),cy:y(s.at(-1)),r:3.5,fill:SC[k].c}))});
+  const box=$("scen");box.innerHTML="";box.append(el("h3",{},`En ${Y} año${Y>1?"s":""} tendrías`));
+  box.append(el("p",{class:"small muted"},`Pones en total ${cop(P+M*12*Y)}.`));
+  SC.forEach((s,k)=>{const d=el("div",{class:"s"});const l=el("span");l.append(el("i",{style:`display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;background:${s.c}`}),document.createTextNode(s.n));d.append(l,el("b",{class:"num"},cop(series[k].at(-1))));box.append(d)});
+  box.append(el("p",{class:"small muted"},"Tasas anuales después de inflación, como referencia. El S&P 500 ha dado cerca de 7 % al año en promedio histórico, con años muy malos en el medio."));
+  let after=0;PLAN.forEach(x=>{const v=P*(pct[x.id]??0)/100;after+=x.sym===null?v:x.sym==="VOO"?v*.7:v*.5});
+  $("crashA").textContent=cop(P);$("crashB").textContent=cop(after);
+}
+$("mensual").addEventListener("input",drawProj);$("anios").addEventListener("input",drawProj);
+
+/* Noticias */
+const NQ={ANT:"Anthropic",NVDA:"Nvidia",GOOGL:"Google Alphabet",META:"Meta Platforms",VOO:"S&P 500 bolsa"};
+let ntab=store.get("ntab")||"ANT";
+function buildNews(){
+  const tabs=$("tabs");tabs.innerHTML="";
+  Object.keys(NQ).forEach(k=>{const b=el("button",{class:"tab",role:"tab",type:"button","aria-selected":String(k===ntab)},k==="VOO"?"Mercado":INFO[k].n.split(" (")[0]);
+    b.addEventListener("click",()=>{ntab=k;store.set("ntab",k);buildNews()});tabs.append(b)});
+  const list=$("newsList");list.innerHTML="";
+  (D.noticias[ntab]||[]).forEach(n=>{if(!/^https:\/\//.test(n.enlace||""))return;
+    const a=el("a",{class:"item",href:n.enlace,target:"_blank",rel:"noopener"});a.append(el("span",{},n.titulo),el("span",{class:"meta"},`${n.fuente} · ${n.fecha}`));list.append(a)});
+  $("moreNews").href="https://news.google.com/search?q="+encodeURIComponent(NQ[ntab])+"&hl=es-419&gl=CO&ceid=CO:es-419";
+}
+
+/* Calendario */
+const EV=[
+  ["2026-12-09","Fed decide la tasa de interés de EE. UU.","Reunión 8 y 9 de dic.; anuncio el 9 a las 2 p. m. (hora Colombia). Mueve todo el mercado.",false],
+  ["2026-12-15","ANT: empleados pueden vender unas 303 millones de acciones","Cuando muchos pueden vender a la vez, el precio suele bajar esos días.",false],
+  ["2026-12-18","Banco de la República decide la tasa en Colombia","Hoy está en 12,25 %. Si la bajan, los CDT nuevos y las cajitas rinden menos.",false],
+  ["2027-01-28","Meta presenta resultados del año","Fecha estimada: suele ser a finales de enero.",true],
+  ["2027-02-03","Alphabet (Google) presenta resultados del año","Fecha estimada: suele ser a inicios de febrero.",true],
+  ["2027-02-24","Nvidia presenta resultados","Fecha estimada: suele ser a finales de febrero. Primeros con la CEO interina.",true],
+  ["2027-05-17","ANT: los fundadores pueden empezar a vender (hasta 29 %)","O antes, si Anthropic publica sus resultados del primer trimestre.",false],
+  ["2027-11-18","ANT: termina todo el bloqueo de venta","Desde aquí, todos los dueños grandes pueden vender.",false]
+];
+function buildCal(){
+  const box=$("cal");box.innerHTML="";const hoy=new Date(new Date().toDateString());
+  EV.forEach(([d,t,desc,aprox])=>{const dt=new Date(d+"T12:00"),days=Math.round((dt-hoy)/864e5);
+    const row=el("div",{class:"ev"+(days<0?" past":"")});
+    const dd=el("div",{class:"d"});dd.append(document.createTextNode(dt.toLocaleDateString("es-CO",{day:"numeric",month:"short"})),el("small",{},String(dt.getFullYear())));
+    const mid=el("div",{style:"display:grid;gap:2px;min-width:0"});const h=el("strong",{},t);mid.append(h);if(aprox)mid.append(el("span",{class:"tag"},"Fecha aprox."));mid.append(el("span",{class:"small muted"},desc));
+    row.append(dd,mid,el("span",{class:"left"},days<0?"pasó":days===0?"hoy":`en ${days} d`));box.append(row)});
+}
+
+/* Pasos */
+const STEPS=[
+  "Crear la cuenta en Nu (app Nu Colombia, con tu cédula).",
+  "Crear la cuenta en Lulo Bank (app, con tu cédula) y revisar tasa y monto mínimo del CDT.",
+  "Decidir: la parte en pesos en la cajita de Nu, en el CDT de Lulo o mitad y mitad.",
+  "Verificar la cuenta en Hapi.",
+  "Instalar la app ntfy y suscribirse al canal de alertas.",
+  "Depositar en Hapi por PSE, todo de una vez.",
+  "Comprar VOO.",
+  "Comprar la primera mitad de ANT con orden límite.",
+  "Comprar la primera mitad de Nvidia.",
+  "Comprar Google y Meta.",
+  "En 3-4 semanas: comprar la segunda mitad de ANT y de Nvidia.",
+  "Cada mes: juntar ahorro en Nu y pasarlo a Hapi cada 2-3 meses."
+];
+let done=store.get("done-v3")||[];
+function buildSteps(){
+  const ol=$("steps");ol.innerHTML="";
+  STEPS.forEach((s,i)=>{const li=el("li",{class:done.includes(i)?"done":""});const cb=el("input",{type:"checkbox",id:"s"+i});cb.checked=done.includes(i);
+    cb.addEventListener("change",()=>{done=cb.checked?[...new Set([...done,i])]:done.filter(d=>d!==i);store.set("done-v3",done);li.classList.toggle("done",cb.checked);stepProg()});
+    li.append(cb,el("label",{for:"s"+i},s));ol.append(li)});stepProg();
+}
+function stepProg(){$("stepCount").textContent=`${done.length} de ${STEPS.length}`;$("stepBar").style.width=(done.length/STEPS.length*100)+"%"}
+
+/* Enlaces */
+const LINKS=[
+  ["Hapi","Tu bróker: comprar y vender","https://hapi.trade/"],
+  ["Nu Colombia","Cajitas y CDT","https://nu.com.co/"],
+  ["Lulo Bank","CDT a 1 año","https://www.lulobank.com/"],
+  ["Comparador de CDT","Tasas de todos los bancos, actualizado","https://www.decidetubanco.com/"],
+  ["Calendario económico","Fechas de resultados y datos (Investing.com)","https://es.investing.com/economic-calendar/"],
+  ["Resultados por fecha","Qué empresas presentan cada día (Yahoo)","https://finance.yahoo.com/calendar/earnings"],
+  ["Anthropic ante la SEC","Documentos oficiales: prospecto, resultados","https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&company=anthropic&type=&dateb=&owner=include&count=40"],
+  ["Mapa del mercado","Qué sube y qué baja hoy (Finviz)","https://finviz.com/map.ashx"],
+  ["TRM oficial","Dólar en Colombia (Banco de la República)","https://www.banrep.gov.co/es/estadisticas/trm"],
+  ["Tasa del Banco de la República","Decisiones y calendario","https://www.banrep.gov.co/es/noticias/calendario-actividades-junta-directiva"],
+  ["La Fed","Calendario de reuniones","https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"]
+];
+LINKS.forEach(([t,s,u])=>{const a=el("a",{class:"lk",href:u,target:"_blank",rel:"noopener"});a.append(el("b",{},t+" ↗"),el("small",{},s));$("links").append(a)});
+/* Se recarga sola cada 15 minutos si la pestaña está a la vista */
+setInterval(()=>{if(document.visibilityState==="visible")location.reload()},15*60*1000);
+
+$("total").addEventListener("input",calc);$("trm").addEventListener("input",calc);
+$("reset").addEventListener("click",()=>{pct=Object.fromEntries(PLAN.map(x=>[x.id,x.p]));store.set("pct",pct);buildRows();calc()});
+buildCards();buildRows();calc();drawBig();buildNews();buildCal();buildSteps();
+let rt;addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(()=>{drawBig();drawProj()},150)});
+</script>
+</body></html>
