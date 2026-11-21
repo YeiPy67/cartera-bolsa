@@ -1,0 +1,331 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//cartera-bolsa//ES
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Mi cartera · todas las fechas
+X-WR-TIMEZONE:America/Bogota
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2026-11-26-bolsa-de-ee-uu-cerrada-acci-n-de-gracias@cartera-bolsa
+DTSTAMP:20261121T010318Z
+DTSTART;VALUE=DATE:20261126
+DTEND;VALUE=DATE:20261127
+SUMMARY:Bolsa de EE. UU. cerrada (Acción de Gracias)
+DESCRIPTION:No se puede comprar ni vender ese día. El viernes 27 cierra te
+ mprano\, a la 1 p. m. de Nueva York.
+URL:https://yeipy67.github.io/cartera-bolsa/#fechas
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-04-informe-de-empleo-de-ee-uu-noviembre-@cartera-bolsa
+DTSTAMP:20261121T010318Z
+DTSTART;VALUE=DATE:20261204
+DTEND;VALUE=DATE:20261205
+SUMMARY:Informe de empleo de EE. UU. (noviembre) (fecha aprox.)
+DESCRIPTION:Si vuelve a salir muy fuerte\, sube la probabilidad de que la F
+ ed suba la tasa.
+URL:https://yeipy67.github.io/cartera-bolsa/#fechas
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-07-dane-publica-la-inflaci-n-de-noviembre@cartera-bolsa
+DTSTAMP:20261121T010318Z
+DTSTART;VALUE=DATE:20261207
+DTEND;VALUE=DATE:20261208
+SUMMARY:DANE publica la inflación de noviembre (fecha aprox.)
+DESCRIPTION:Hoy en 6\,30 %. Si sigue alta\, el Banco de la República no ba
+ ja tasas y los CDT siguen rindiendo bien.
+URL:https://yeipy67.github.io/cartera-bolsa/#fechas
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-08-festivo-en-colombia@cartera-bolsa
+DTSTAMP:20261121T010318Z
+DTSTART;VALUE=DATE:20261208
+DTEND;VALUE=DATE:20261209
+SUMMARY:Festivo en Colombia
+DESCRIPTION:Bancos cerrados: los depósitos por PSE a Hapi pueden demorarse
+ .
+URL:https://yeipy67.github.io/cartera-bolsa/#fechas
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-09-la-fed-decide-la-tasa-de-inter-s-de-ee-u@cartera-bolsa
+DTSTAMP:20261121T010318Z
+DTSTART:20261209T190000Z
+DTEND:20261209T200000Z
+SUMMARY:⭐ La Fed decide la tasa de interés de EE. UU.
+DESCRIPTION:El mercado espera una SUBIDA (no una bajada). Si sube medio pun
+ to\, la bolsa puede caer más. Anuncio a las 2 p. m. hora Colombia.
+URL:https://yeipy67.github.io/cartera-bolsa/#fechas
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:La Fed decide la tasa de interés de EE. UU.
+TRIGGER:-P1D
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-10-inflaci-n-de-ee-uu-noviembre-@cartera-bolsa
+DTSTAMP:20261121T010318Z
+DTSTART;VALUE=DATE:20261210
+DTEND;VALUE=DATE:20261211
+SUMMARY:Inflación de EE. UU. (noviembre) (fecha aprox.)
+DESCRIPTION:Dato que mueve las expectativas de tasas para 2027.
+URL:https://yeipy67.github.io/cartera-bolsa/#fechas
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-15-ant-empleados-pueden-vender-unas-303-mil@cartera-bolsa
+DTSTAMP:20261121T010318Z
+DTSTART;VALUE=DATE:20261215
+DTEND;VALUE=DATE:20261216
+SUMMARY:⭐ ANT: empleados pueden vender unas 303 millones de acciones
+DESCRIPTION:Cuando muchos pueden vender a la vez\, el precio suele bajar es
+ os días.
+URL:https://yeipy67.github.io/cartera-bolsa/#fechas
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:ANT: empleados pueden vender unas 303 millones de acciones
+TRIGGER:-P1D
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-18-banco-de-la-rep-blica-decide-la-tasa-en-@cartera-bolsa
+DTSTAMP:20261121T010318Z
+DTSTART;VALUE=DATE:20261218
+DTEND;VALUE=DATE:20261219
+SUMMARY:⭐ Banco de la República decide la tasa en Colombia
+DESCRIPTION:Hoy en 12\,25 %. Si la bajan\, los CDT nuevos rinden menos: con
+ viene abrir el CDT antes.
+URL:https://yeipy67.github.io/cartera-bolsa/#fechas
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Banco de la República decide la tasa en Colombia
+TRIGGER:-P1D
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-20--ltimo-d-a-para-pagar-la-prima-de-diciem@cartera-bolsa
+DTSTAMP:20261121T010318Z
+DTSTART;VALUE=DATE:20261220
+DTEND;VALUE=DATE:20261221
+SUMMARY:Último día para pagar la prima de diciembre
+DESCRIPTION:Si te pagan prima\, es buena plata para el plan (o para tu colc
+ hón en Nu).
+URL:https://yeipy67.github.io/cartera-bolsa/#fechas
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-24-bolsa-de-ee-uu-cierra-temprano@cartera-bolsa
+DTSTAMP:20261121T010318Z
+DTSTART;VALUE=DATE:20261224
+DTEND;VALUE=DATE:20261225
+SUMMARY:Bolsa de EE. UU. cierra temprano
+DESCRIPTION:Cierra a la 1 p. m. de Nueva York.
+URL:https://yeipy67.github.io/cartera-bolsa/#fechas
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-25-navidad-bolsa-de-ee-uu-cerrada-y-festivo@cartera-bolsa
+DTSTAMP:20261121T010318Z
+DTSTART;VALUE=DATE:20261225
+DTEND;VALUE=DATE:20261226
+SUMMARY:Navidad: bolsa de EE. UU. cerrada y festivo en Colombia
+DESCRIPTION:Nadie opera.
+URL:https://yeipy67.github.io/cartera-bolsa/#fechas
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-01-a-o-nuevo-bolsa-de-ee-uu-cerrada-y-festi@cartera-bolsa
+DTSTAMP:20261121T010318Z
+DTSTART;VALUE=DATE:20270101
+DTEND;VALUE=DATE:20270102
+SUMMARY:Año Nuevo: bolsa de EE. UU. cerrada y festivo en Colombia
+DESCRIPTION:Nadie opera.
+URL:https://yeipy67.github.io/cartera-bolsa/#fechas
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-06-ces-2027-en-las-vegas@cartera-bolsa
+DTSTAMP:20261121T010318Z
+DTSTART;VALUE=DATE:20270106
+DTEND;VALUE=DATE:20270107
+SUMMARY:CES 2027 en Las Vegas (fecha aprox.)
+DESCRIPTION:Feria de tecnología: Nvidia\, AMD y otras suelen anunciar prod
+ uctos de IA.
+URL:https://yeipy67.github.io/cartera-bolsa/#fechas
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-08-informe-de-empleo-de-ee-uu-diciembre-@cartera-bolsa
+DTSTAMP:20261121T010318Z
+DTSTART;VALUE=DATE:20270108
+DTEND;VALUE=DATE:20270109
+SUMMARY:Informe de empleo de EE. UU. (diciembre) (fecha aprox.)
+DESCRIPTION:Primer dato grande del año para la Fed.
+URL:https://yeipy67.github.io/cartera-bolsa/#fechas
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-11-festivo-en-colombia-reyes-@cartera-bolsa
+DTSTAMP:20261121T010318Z
+DTSTART;VALUE=DATE:20270111
+DTEND;VALUE=DATE:20270112
+SUMMARY:Festivo en Colombia (Reyes)
+DESCRIPTION:Bancos cerrados.
+URL:https://yeipy67.github.io/cartera-bolsa/#fechas
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-18-bolsa-de-ee-uu-cerrada-martin-luther-kin@cartera-bolsa
+DTSTAMP:20261121T010318Z
+DTSTART;VALUE=DATE:20270118
+DTEND;VALUE=DATE:20270119
+SUMMARY:Bolsa de EE. UU. cerrada (Martin Luther King)
+DESCRIPTION:No se puede operar.
+URL:https://yeipy67.github.io/cartera-bolsa/#fechas
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-27-la-fed-decide-la-tasa-primera-reuni-n-de@cartera-bolsa
+DTSTAMP:20261121T010318Z
+DTSTART:20270127T190000Z
+DTEND:20270127T200000Z
+SUMMARY:⭐ La Fed decide la tasa (primera reunión de 2027)
+DESCRIPTION:Reunión 26 y 27 de enero.
+URL:https://yeipy67.github.io/cartera-bolsa/#fechas
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:La Fed decide la tasa (primera reunión de 2027)
+TRIGGER:-P1D
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-28-meta-presenta-resultados-del-a-o@cartera-bolsa
+DTSTAMP:20261121T010318Z
+DTSTART;VALUE=DATE:20270128
+DTEND;VALUE=DATE:20270129
+SUMMARY:Meta presenta resultados del año (fecha aprox.)
+DESCRIPTION:Suele ser a finales de enero. Ojo con cuánto dice que va a gas
+ tar en IA.
+URL:https://yeipy67.github.io/cartera-bolsa/#fechas
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-02-03-alphabet-google-presenta-resultados-del-@cartera-bolsa
+DTSTAMP:20261121T010318Z
+DTSTART;VALUE=DATE:20270203
+DTEND;VALUE=DATE:20270204
+SUMMARY:Alphabet (Google) presenta resultados del año (fecha aprox.)
+DESCRIPTION:Suele ser a inicios de febrero.
+URL:https://yeipy67.github.io/cartera-bolsa/#fechas
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-02-15-bolsa-de-ee-uu-cerrada-d-a-de-los-presid@cartera-bolsa
+DTSTAMP:20261121T010318Z
+DTSTART;VALUE=DATE:20270215
+DTEND;VALUE=DATE:20270216
+SUMMARY:Bolsa de EE. UU. cerrada (Día de los Presidentes)
+DESCRIPTION:No se puede operar.
+URL:https://yeipy67.github.io/cartera-bolsa/#fechas
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-02-24-nvidia-presenta-resultados@cartera-bolsa
+DTSTAMP:20261121T010318Z
+DTSTART;VALUE=DATE:20270224
+DTEND;VALUE=DATE:20270225
+SUMMARY:⭐ Nvidia presenta resultados (fecha aprox.)
+DESCRIPTION:Suele ser a finales de febrero. Primeros con la CEO interina.
+URL:https://yeipy67.github.io/cartera-bolsa/#fechas
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Nvidia presenta resultados
+TRIGGER:-P1D
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-03-15-nvidia-gtc-2027@cartera-bolsa
+DTSTAMP:20261121T010318Z
+DTSTART;VALUE=DATE:20270315
+DTEND;VALUE=DATE:20270316
+SUMMARY:Nvidia GTC 2027 (fecha aprox.)
+DESCRIPTION:Su gran evento anual de producto. Suele ser a mediados de marzo
+ .
+URL:https://yeipy67.github.io/cartera-bolsa/#fechas
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-03-17-la-fed-decide-la-tasa@cartera-bolsa
+DTSTAMP:20261121T010318Z
+DTSTART:20270317T190000Z
+DTEND:20270317T200000Z
+SUMMARY:La Fed decide la tasa
+DESCRIPTION:Reunión 16 y 17 de marzo\, con proyecciones económicas.
+URL:https://yeipy67.github.io/cartera-bolsa/#fechas
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-03-26-bolsa-de-ee-uu-cerrada-viernes-santo-@cartera-bolsa
+DTSTAMP:20261121T010318Z
+DTSTART;VALUE=DATE:20270326
+DTEND;VALUE=DATE:20270327
+SUMMARY:Bolsa de EE. UU. cerrada (Viernes Santo)
+DESCRIPTION:No se puede operar.
+URL:https://yeipy67.github.io/cartera-bolsa/#fechas
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-04-28-la-fed-decide-la-tasa@cartera-bolsa
+DTSTAMP:20261121T010318Z
+DTSTART:20270428T190000Z
+DTEND:20270428T200000Z
+SUMMARY:La Fed decide la tasa
+DESCRIPTION:Reunión 27 y 28 de abril.
+URL:https://yeipy67.github.io/cartera-bolsa/#fechas
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-05-17-ant-los-fundadores-pueden-empezar-a-vend@cartera-bolsa
+DTSTAMP:20261121T010318Z
+DTSTART;VALUE=DATE:20270517
+DTEND;VALUE=DATE:20270518
+SUMMARY:⭐ ANT: los fundadores pueden empezar a vender (hasta 29 %)
+DESCRIPTION:O antes\, si Anthropic publica resultados del primer trimestre.
+URL:https://yeipy67.github.io/cartera-bolsa/#fechas
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:ANT: los fundadores pueden empezar a vender (hasta 29 %)
+TRIGGER:-P1D
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-06-09-la-fed-decide-la-tasa@cartera-bolsa
+DTSTAMP:20261121T010318Z
+DTSTART:20270609T190000Z
+DTEND:20270609T200000Z
+SUMMARY:La Fed decide la tasa
+DESCRIPTION:Reunión 8 y 9 de junio.
+URL:https://yeipy67.github.io/cartera-bolsa/#fechas
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-11-18-ant-termina-todo-el-bloqueo-de-venta@cartera-bolsa
+DTSTAMP:20261121T010318Z
+DTSTART;VALUE=DATE:20271118
+DTEND;VALUE=DATE:20271119
+SUMMARY:ANT: termina todo el bloqueo de venta
+DESCRIPTION:Desde aquí todos los dueños grandes pueden vender.
+URL:https://yeipy67.github.io/cartera-bolsa/#fechas
+TRANSP:TRANSPARENT
+END:VEVENT
+END:VCALENDAR

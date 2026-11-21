@@ -1,0 +1,69 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//cartera-bolsa//ES
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Mi cartera · Colombia
+X-WR-TIMEZONE:America/Bogota
+REFRESH-INTERVAL;VALUE=DURATION:PT12H
+X-PUBLISHED-TTL:PT12H
+BEGIN:VEVENT
+UID:2026-12-07-dane-publica-la-inflaci-n-de-noviembre@cartera-bolsa
+DTSTAMP:20261121T010318Z
+DTSTART;VALUE=DATE:20261207
+DTEND;VALUE=DATE:20261208
+SUMMARY:DANE publica la inflación de noviembre (fecha aprox.)
+DESCRIPTION:Hoy en 6\,30 %. Si sigue alta\, el Banco de la República no ba
+ ja tasas y los CDT siguen rindiendo bien.
+URL:https://yeipy67.github.io/cartera-bolsa/#fechas
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-08-festivo-en-colombia@cartera-bolsa
+DTSTAMP:20261121T010318Z
+DTSTART;VALUE=DATE:20261208
+DTEND;VALUE=DATE:20261209
+SUMMARY:Festivo en Colombia
+DESCRIPTION:Bancos cerrados: los depósitos por PSE a Hapi pueden demorarse
+ .
+URL:https://yeipy67.github.io/cartera-bolsa/#fechas
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-18-banco-de-la-rep-blica-decide-la-tasa-en-@cartera-bolsa
+DTSTAMP:20261121T010318Z
+DTSTART;VALUE=DATE:20261218
+DTEND;VALUE=DATE:20261219
+SUMMARY:⭐ Banco de la República decide la tasa en Colombia
+DESCRIPTION:Hoy en 12\,25 %. Si la bajan\, los CDT nuevos rinden menos: con
+ viene abrir el CDT antes.
+URL:https://yeipy67.github.io/cartera-bolsa/#fechas
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Banco de la República decide la tasa en Colombia
+TRIGGER:-P1D
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-20--ltimo-d-a-para-pagar-la-prima-de-diciem@cartera-bolsa
+DTSTAMP:20261121T010318Z
+DTSTART;VALUE=DATE:20261220
+DTEND;VALUE=DATE:20261221
+SUMMARY:Último día para pagar la prima de diciembre
+DESCRIPTION:Si te pagan prima\, es buena plata para el plan (o para tu colc
+ hón en Nu).
+URL:https://yeipy67.github.io/cartera-bolsa/#fechas
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-11-festivo-en-colombia-reyes-@cartera-bolsa
+DTSTAMP:20261121T010318Z
+DTSTART;VALUE=DATE:20270111
+DTEND;VALUE=DATE:20270112
+SUMMARY:Festivo en Colombia (Reyes)
+DESCRIPTION:Bancos cerrados.
+URL:https://yeipy67.github.io/cartera-bolsa/#fechas
+TRANSP:TRANSPARENT
+END:VEVENT
+END:VCALENDAR

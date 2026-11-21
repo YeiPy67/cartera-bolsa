@@ -1,0 +1,122 @@
+{
+  "fecha_iso": "2026-11-20",
+  "fecha": "Viernes 20 de noviembre de 2026",
+  "periodo": "Semana del 16 al 20 de noviembre",
+  "titular": "La semana en que la IA dejó de parecer invencible",
+  "bajada": "Siete días seguidos de caídas, Nvidia sin su fundador, una salida a bolsa récord que no levantó el ánimo y una Fed que en vez de bajar tasas piensa subirlas. Esto fue lo que pasó y lo que significa para ti.",
+  "cifras": [
+    {
+      "l": "S&P 500 el viernes",
+      "v": "−3,6 %",
+      "s": "7 caídas seguidas, la peor racha desde feb. 2020",
+      "t": "dn"
+    },
+    {
+      "l": "Nasdaq el viernes",
+      "v": "−5,3 %",
+      "s": "Borró todo lo que había ganado en 2026",
+      "t": "dn"
+    },
+    {
+      "l": "Índice del miedo (VIX)",
+      "v": "≈ 36",
+      "s": "+26 % en un día. Más de 30 es pánico",
+      "t": "dn"
+    },
+    {
+      "l": "Taiwán en la semana",
+      "v": "−17 %",
+      "s": "Su peor semana desde 1990 (allá están los chips)",
+      "t": "dn"
+    }
+  ],
+  "secciones": [
+    {
+      "id": "que",
+      "titulo": "Qué pasó",
+      "puntos": [
+        "El S&P 500 cayó 3,6 % el viernes y entró en “corrección”: ya está más de 10 % por debajo de su máximo. Fue su séptima caída seguida, algo que no pasaba desde febrero de 2020, justo antes de la pandemia.",
+        "El Nasdaq, lleno de tecnológicas, se hundió 5,3 % y quedó en negativo para el año.",
+        "Nvidia se desplomó 14 % hasta su precio más bajo en 18 meses y tuvo su peor semana desde 2008. Además de la salida de Jensen Huang, varios medios (Reuters, El Confidencial, Investing) reportan que la SEC, el regulador de la bolsa, está examinando su contabilidad. Nvidia no ha dicho que haya errores.",
+        "Los chips cayeron en bloque: AMD −13 %, Broadcom −12 %, TSMC −9,5 %. En Asia fue la peor semana desde marzo de 2020.",
+        "Anthropic tuvo la salida a bolsa más grande de la historia el jueves (salió a 83, abrió a 111,50 y cerró en 97). El viernes cayó 8,5 % a 88,91.",
+        "Ni el oro se salvó: cayó a su nivel más bajo en 14 meses. Y en Colombia el dólar se disparó por encima de 3.400 pesos."
+      ]
+    },
+    {
+      "id": "porque",
+      "titulo": "Por qué pasó",
+      "puntos": [
+        "Miedo a que la IA esté sobrevalorada. Las empresas están gastando cantidades enormes en centros de datos y el mercado empezó a dudar de que esa inversión vaya a dar la plata que se esperaba. BNP Paribas lo llamó “ventas de pánico”.",
+        "La Fed se puso dura. El empleo de octubre salió casi tres veces más fuerte de lo esperado (165.000 puestos), así que el mercado ahora apuesta a que la Fed SUBA la tasa el 9 de diciembre (entre 70 % y 97 % de probabilidad, según la fuente). El bono a 10 años de EE. UU. está cerca de 5,1 %. Cuando las tasas suben, las acciones de crecimiento valen menos, porque sus ganancias están lejos en el futuro.",
+        "Política. Los demócratas arrasaron en las elecciones de mitad de período y crece el rechazo a los centros de datos (consumen mucha energía y agua). Más regulación significa más costos para la IA.",
+        "Nvidia es el símbolo de la IA. Perder a su fundador y tener dudas contables al mismo tiempo golpea la confianza en todo el sector. Cuando cae el líder, caen todos.",
+        "Anthropic salió en el peor momento. Muchos compraron para vender rápido con ganancia y salieron apenas vieron el mercado rojo."
+      ]
+    },
+    {
+      "id": "empresas",
+      "titulo": "Qué significa para las empresas",
+      "puntos": [
+        "Nvidia: el problema hoy no es que vendan menos chips (no hay señales de eso), sino de confianza: quién la dirige y si sus cuentas están bien. Hasta que haya un CEO permanente y la SEC termine, va a moverse mucho. Dato del golpe: Google le quitó el puesto de tercera empresa más valiosa del mundo.",
+        "Anthropic: su precio depende del ánimo con la IA. La fecha a vigilar es el 15 de diciembre, cuando empleados pueden vender unas 303 millones de acciones. Eso suele presionar el precio a la baja.",
+        "Google y Meta cayeron menos (−2,7 % y −5,9 %) porque ya ganan mucha plata con publicidad. Son las más “firmes” de la tecnología. A Meta la castigan por cuánto planea gastar en IA en 2027.",
+        "VOO (las 500 grandes) cayó 3,4 %: menos que las acciones sueltas, como debe ser. Para eso es la base del plan."
+      ]
+    },
+    {
+      "id": "mercado",
+      "titulo": "Qué significa para el mercado",
+      "puntos": [
+        "Una corrección (−10 %) es normal: históricamente pasa más o menos una vez cada uno o dos años. Un mercado bajista es cuando la caída llega a −20 %. No hay forma de saber si esto se queda en corrección o sigue.",
+        "Con el índice del miedo por encima de 30 suelen venir días de rebotes fuertes y caídas fuertes, uno tras otro. No te asustes si un día sube 3 % y al siguiente baja 4 %.",
+        "La fecha más importante es el 9 de diciembre (la Fed). Si sube medio punto, la bolsa puede caer más. Si sube poco y habla suave, puede llegar un alivio."
+      ]
+    },
+    {
+      "id": "ti",
+      "titulo": "Qué significa para ti",
+      "puntos": [
+        "Como todavía no has comprado, esto juega a tu favor: hoy compras más barato que hace una semana. Nvidia estaba en 151 USD el 18 de noviembre y hoy está en 125; ANT abrió en 111 y hoy está en 89.",
+        "Pero algo barato puede ponerse más barato. Propuesta: divide lo de Hapi en 3 compras. Un tercio ahora, otro después de la Fed (10 u 11 de diciembre) y el último después del desbloqueo de ANT (16 de diciembre en adelante) o en enero.",
+        "El dólar está caro (más de 3.400). Cada dólar te cuesta más pesos, y si el peso se recupera, lo que tengas en dólares valdrá menos en pesos. Comprar en partes también te ayuda a promediar el dólar.",
+        "La parte en pesos se ve muy bien ahora: con inflación de 6,3 %, el Banco de la República difícilmente baja tasas pronto. Si vas a abrir el CDT de Lulo, hazlo antes del 18 de diciembre.",
+        "Nada de esto cambia el plan de largo plazo. VOO es la base; las acciones sueltas son la apuesta."
+      ]
+    }
+  ],
+  "fuentes": [
+    [
+      "Fortune: el S&P 500 entra en corrección",
+      "https://fortune.com/2026/11/20/sp-500-correction-panic-selling-ai-selloff-nasdaq-2026-gains-bnp-paribas/"
+    ],
+    [
+      "Washington Times: se acelera la venta de acciones de IA",
+      "https://www.washingtontimes.com/news/2026/nov/20/us-stocks-tumble-sp-500-falls-sell-ai-stocks-accelerates/"
+    ],
+    [
+      "TradingKey: Nasdaq −5 % y Nvidia con la SEC",
+      "https://www.tradingkey.com/analysis/stocks/us-stocks/262316111-nasdaq-falls-ai-stock-selloff-nvidia-sec-probe-tradingkey"
+    ],
+    [
+      "MarketScreener: Asia, peor semana desde 2020",
+      "https://www.marketscreener.com/news/stocks-slide-as-ai-selloff-deepens-asia-has-worst-week-since-2020-ce785ed3db89f623"
+    ],
+    [
+      "24/7 Wall St.: sube la probabilidad de alza de la Fed",
+      "https://247wallst.com/investing/2026/11/07/odds-of-a-december-rate-hike-jump-to-77-after-a-blowout-jobs-report/"
+    ],
+    [
+      "InvestmentNews: empleo de octubre",
+      "https://www.investmentnews.com/fixed-income/october-jobs-report-beats-forecasts-lifting-december-fed-hike-odds/268915"
+    ],
+    [
+      "Bloomberg Línea: el dólar en Colombia pasa 3.300",
+      "https://www.bloomberglinea.com/economia/el-dolar-en-colombia-vuelve-a-pasar-los-cop3300-y-los-analistas-ya-le-ponen-techo-para-noviembre/"
+    ],
+    [
+      "Calendario de desbloqueo de ANT",
+      "https://aistockwire.com/blog/anthropic-ant-ipo-lockup-expiration-dates-calendar"
+    ]
+  ]
+}
