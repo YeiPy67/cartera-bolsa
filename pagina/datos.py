@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 UA = "Mozilla/5.0 (X11; Linux x86_64) alertas-bolsa"
 def pedir(url):
     return urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": UA}), timeout=20).read()
-SIMBOLOS = {"VOO": "6mo", "ANT": "1mo", "NVDA": "6mo", "GOOGL": "6mo", "META": "6mo", "COP=X": "6mo"}
+SIMBOLOS = {"VOO": "1y", "ANT": "3mo", "NVDA": "1y", "GOOGL": "1y", "META": "1y", "COP=X": "1y"}
 NOTICIAS = {"ANT": "Anthropic", "NVDA": "Nvidia", "GOOGL": "Google Alphabet", "META": "Meta Platforms", "VOO": "S&P 500 bolsa"}
 out = {"generado": datetime.now(timezone.utc).isoformat(timespec="minutes"), "precios": {}, "noticias": {}}
 for s, rango in SIMBOLOS.items():
